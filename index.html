@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Школьный Чат</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --primary: #FFD700;
+      --secondary: #FF8C00;
+      --dark: #1a1a1a;
+      --light: #f9f9f9;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--dark);
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      padding: 20px 0;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .id-badge {
+      background: rgba(255,255,255,0.3);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-family: monospace;
+      margin-top: 8px;
+      display: inline-block;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      margin: 12px 0;
+      border: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .btn-idea { background: #4CAF50; color: white; }
+    .btn-question { background: #2196F3; color: white; }
+    .btn-complaint { background: #F44336; color: white; }
+    .btn-secondary { background: white; color: var(--dark); }
+    .hidden { display: none !important; }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #ddd;
+      font-size: 16px;
+      resize: vertical;
+      margin: 10px 0;
+    }
+    .preview {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 16px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .status {
+      text-align: center;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .rules {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Главный экран -->
+    <div id="screen-main">
+      <header>
+        <h1>🏫 Школьный Чат</h1>
+        <div class="id-badge" id="user-id">Загрузка...</div>
+      </header>
+      <button class="btn btn-secondary" onclick="showRules()">📜 Правила</button>
+      <button class="btn btn-secondary" onclick="startFeedback()">📨 Отправить обращение</button>
+    </div>
+
+    <!-- Экран выбора категории -->
+    <div id="screen-type" class="hidden">
+      <header><h1>Выбери категорию</h1></header>
+      <button class="btn btn-idea" onclick="selectType('idea')">💡 Идея</button>
+      <button class="btn btn-question" onclick="selectType('question')">❓ Вопрос</button>
+      <button class="btn btn-complaint" onclick="selectType('complaint')">⚠️ Проблема</button>
+      <button class="btn btn-secondary" onclick="backToMain()">← Назад</button>
+    </div>
+
+    <!-- Экран ввода -->
+    <div id="screen-input" class="hidden">
+      <header><h1 id="input-title">✍️ Опиши подробно</h1></header>
+      <textarea id="feedback-text" placeholder="Напиши сюда своё обращение..."></textarea>
+      <button class="btn btn-secondary" onclick="previewFeedback()">✅ Подтвердить</button>
+      <button class="btn btn-secondary" onclick="backToType()">← Назад</button>
+    </div>
+
+    <!-- Предпросмотр -->
+    <div id="screen-preview" class="hidden">
+      <header><h1>Предпросмотр</h1></header>
+      <div class="preview" id="preview-content"></div>
+      <button class="btn btn-secondary" onclick="sendFeedback()">📤 Отправить</button>
+      <button class="btn btn-secondary" onclick="editFeedback()">✏️ Редактировать</button>
+      <button class="btn btn-secondary" onclick="backToMain()">❌ Отмена</button>
+    </div>
+
+    <!-- Успешно отправлено -->
+    <div id="screen-success" class="hidden">
+      <div class="status">✅ Обращение отправлено!</div>
+      <button class="btn btn-secondary" onclick="backToMain()">🏠 В главное меню</button>
+    </div>
+
+    <!-- Правила -->
+    <div id="screen-rules" class="hidden">
+      <header><h1>📜 Правила</h1></header>
+      <div class="rules">
+        <p><b>1.</b> Не оскорбляй других.</p>
+        <p><b>2.</b> Не спамь — максимум 5 обращений в день.</p>
+        <p><b>3.</b> Не выдавай себя — твой ID анонимен.</p>
+        <p><b>4.</b> За нарушения — бан на 24 часа.</p>
+        <p><b>5.</b> Цель — сделать школу лучше!</p>
+      </div>
+      <button class="btn btn-secondary" onclick="backToMain()">← Назад</button>
+    </div>
+  </div>
+
+  <script>
+    const CATEGORIES = {
+      idea: '💡 Идея',
+      question: '❓ Вопрос',
+      complaint: '⚠️ Проблема'
+    };
+
+    let currentType = null;
+    let anonId = null;
+
+    // Генерация уникального ID
+    function generateAnonymousId() {
+      if (localStorage.getItem('school_anon_id')) {
+        return localStorage.getItem('school_anon_id');
+      }
+      const letters = Array(4).fill().map(() => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
+      const numbers = Array(2).fill().map(() => Math.floor(Math.random() * 10)).join('');
+      const id = `STU-${letters}${numbers}`;
+      localStorage.setItem('school_anon_id', id);
+      return id;
+    }
+
+    // Инициализация
+    window.onload = () => {
+      anonId = generateAnonymousId();
+      document.getElementById('user-id').textContent = anonId;
+    };
+
+    // Навигация
+    function showScreen(id) {
+      document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function backToMain() { showScreen('screen-main'); }
+    function showRules() { showScreen('screen-rules'); }
+
+    function startFeedback() {
+      showScreen('screen-type');
+    }
+
+    function selectType(type) {
+      currentType = type;
+      document.getElementById('input-title').textContent = `✍️ ${CATEGORIES[type]}`;
+      document.getElementById('feedback-text').value = '';
+      showScreen('screen-input');
+    }
+
+    function previewFeedback() {
+      const text = document.getElementById('feedback-text').value.trim();
+      if (!text) {
+        alert('Пожалуйста, напиши что-нибудь!');
+        return;
+      }
+      const preview = `<b>Категория:</b> ${CATEGORIES[currentType]}<br><br><b>Текст:</b><br>${text.replace(/\n/g, '<br>')}`;
+      document.getElementById('preview-content').innerHTML = preview;
+      showScreen('screen-preview');
+    }
+
+    function editFeedback() {
+      showScreen('screen-input');
+    }
+
+    function backToType() {
+      showScreen('screen-type');
+    }
+
+    async function sendFeedback() {
+      const text = document.getElementById('feedback-text').value.trim();
+      const payload = {
+        anonymous_id: anonId,
+        type: currentType,
+        text: text,
+        timestamp: new Date().toISOString()
+      };
+
+      const status = document.querySelector('.status');
+      status.textContent = '📤 Отправка...';
+
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          showScreen('screen-success');
+        } else {
+          const error = await res.json();
+          alert('Ошибка: ' + (error.detail || 'Не удалось отправить'));
+          backToMain();
+        }
+      } catch (e) {
+        alert('Ошибка сети. Попробуй позже.');
+        backToMain();
+      }
+    }
+  </script>
+</body>
+</html>
