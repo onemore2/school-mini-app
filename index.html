@@ -7,14 +7,18 @@
 </head>
 <body style="background:#000;color:#fff;padding:20px;font-family:sans-serif;">
   <h2>📨 Обращение</h2>
+
   <button id="idea">💡 Идея</button><br>
   <button id="question">❓ Вопрос</button><br>
   <button id="complaint">⚠️ Проблема</button><br><br>
-  <textarea id="text" placeholder="Текст..." rows="4" style="width:100%;background:#222;color:#fff;border:1px solid #444;padding:10px;"></textarea><br><br>
+
+  <textarea id="text" placeholder="Опишите подробно..." rows="4" style="width:100%;background:#222;color:#fff;border:1px solid #444;padding:10px;"></textarea><br><br>
+
   <button id="send" style="width:100%;padding:12px;background:green;color:white;border:none;font-weight:bold;">✅ Отправить</button>
 
   <script>
     let category = 'idea';
+
     document.getElementById('idea').onclick = () => category = 'idea';
     document.getElementById('question').onclick = () => category = 'question';
     document.getElementById('complaint').onclick = () => category = 'complaint';
@@ -22,10 +26,14 @@
     document.getElementById('send').onclick = () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
-        if (Telegram?.WebApp) Telegram.WebApp.showAlert('Введите текст!');
+        if (Telegram?.WebApp) {
+          Telegram.WebApp.showAlert('Введите текст!');
+        }
         return;
       }
+
       const anonId = 'STU-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
       if (Telegram?.WebApp) {
         Telegram.WebApp.sendData(JSON.stringify({
           action: 'submit',
