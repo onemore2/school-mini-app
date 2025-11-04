@@ -85,7 +85,6 @@
       document.getElementById('complaint').classList.add('active');
     };
 
-    // Генерация анонимного ID
     let anonId = localStorage.getItem('schoolAnonId');
     if (!anonId) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -93,12 +92,11 @@
       localStorage.setItem('schoolAnonId', anonId);
     }
 
-    // Отправка
     document.getElementById('send').onclick = () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
         if (Telegram?.WebApp) {
-          Telegram.WebApp.showAlert('Пожалуйста, введите текст обращения.');
+          Telegram.WebApp.showAlert('Введите текст!');
         }
         return;
       }
@@ -110,11 +108,9 @@
         text: text
       };
 
-      // Отправляем данные — Telegram сам закроет окно
       Telegram.WebApp.sendData(JSON.stringify(data));
     };
 
-    // Инициализация
     if (Telegram?.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
