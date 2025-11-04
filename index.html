@@ -4,23 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Школьный Чат</title>
+  <!-- ВАЖНО: без пробелов в конце URL -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    :root {
-      --bg: #000;
-      --card-bg: #111;
-      --text: #fff;
-      --border: #333;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-
     html, body {
       margin: 0;
       padding: 0;
@@ -30,41 +17,36 @@
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-      background: var(--bg);
-      color: var(--text);
+      background: #000;
+      color: #fff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
       overflow-x: hidden;
-      padding-top: 20px;
+      padding-top: 24px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       padding: 0 16px;
     }
 
     .header h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 8px;
+      font-size: 26px;
+      margin-bottom: 6px;
       background: linear-gradient(90deg, #ff0000, #fffb00, #00ffd5, #002bff, #ff00c8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .header p {
-      font-size: 15px;
-      opacity: 0.8;
-    }
-
     .card {
-      background: var(--card-bg);
+      background: #111;
       border-radius: 16px;
       padding: 20px;
       width: 90%;
       max-width: 500px;
       margin-bottom: 24px;
-      box-shadow: 0 0 20px rgba(255, 0, 200, 0.2);
+      border: 1px solid #333;
     }
 
     .section-title {
@@ -73,7 +55,6 @@
       opacity: 0.9;
     }
 
-    /* Категории */
     .categories {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -89,28 +70,19 @@
       font-weight: 600;
       cursor: pointer;
       color: #ccc;
-      transition: all 0.2s;
     }
 
     .category-btn.active {
       background: #333;
       color: white;
       border-color: #ff00c8;
-      box-shadow: 0 0 10px rgba(255, 0, 200, 0.4);
     }
 
-    .category-btn i {
-      display: block;
-      font-size: 24px;
-      margin-bottom: 6px;
-    }
-
-    /* Текстовое поле */
     textarea {
       width: 100%;
-      min-height: 120px;
+      min-height: 110px;
       padding: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid #444;
       border-radius: 12px;
       font-size: 16px;
       background: #222;
@@ -119,17 +91,11 @@
       margin-bottom: 20px;
     }
 
-    textarea:focus {
-      outline: none;
-      border-color: #ff00c8;
-      box-shadow: 0 0 0 2px rgba(255, 0, 200, 0.3);
-    }
-
     textarea::placeholder {
       color: #666;
     }
 
-    /* Кнопка с неоновым свечением */
+    /* --- Неоновая кнопка --- */
     .glow-on-hover {
       width: 90%;
       max-width: 500px;
@@ -144,7 +110,6 @@
       border-radius: 12px;
       font-size: 18px;
       font-weight: 600;
-      letter-spacing: 0.5px;
     }
 
     .glow-on-hover:before {
@@ -162,10 +127,6 @@
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
       border-radius: 12px;
-    }
-
-    .glow-on-hover:active {
-      color: #000;
     }
 
     .glow-on-hover:hover:before {
@@ -189,67 +150,37 @@
       50% { background-position: 400% 0; }
       100% { background-position: 0 0; }
     }
-
-    /* Анимация отправки */
-    .sending {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid transparent;
-      border-top: 2px solid #fff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>📨 Школьный Чат</h1>
-    <p>Анонимно отправь обращение администрации</p>
   </div>
 
   <div class="card">
-    <div class="section-title">1. Выбери категорию</div>
+    <div class="section-title">1. Категория</div>
     <div class="categories">
-      <button class="category-btn active" data-type="idea">
-        <i class="fas fa-lightbulb"></i> Идея
-      </button>
-      <button class="category-btn" data-type="question">
-        <i class="fas fa-question-circle"></i> Вопрос
-      </button>
-      <button class="category-btn" data-type="complaint">
-        <i class="fas fa-exclamation-triangle"></i> Проблема
-      </button>
+      <button class="category-btn active" data-type="idea">💡 Идея</button>
+      <button class="category-btn" data-type="question">❓ Вопрос</button>
+      <button class="category-btn" data-type="complaint">⚠️ Проблема</button>
     </div>
   </div>
 
   <div class="card">
-    <div class="section-title">2. Опиши подробно</div>
-    <textarea id="text" placeholder="Например: В спортзале не хватает мячей или В столовой долго выдают обед..."></textarea>
+    <div class="section-title">2. Текст обращения</div>
+    <textarea id="text" placeholder="Опишите подробно..."></textarea>
   </div>
 
-  <button id="send" class="glow-on-hover">✅ Отправить обращение</button>
+  <button id="send" class="glow-on-hover">✅ Отправить</button>
 
   <script>
-    // Инициализация Telegram WebApp
-    if (window.Telegram && Telegram.WebApp) {
+    // Инициализация Telegram
+    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
-      Telegram.WebApp.setHeaderColor('#000000');
-      Telegram.WebApp.setBackgroundColor('#000000');
     }
 
-    // Категория
+    // Выбор категории
     let category = 'idea';
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -259,53 +190,34 @@
       });
     });
 
-    // Анонимный ID (сохраняется между сессиями)
-    let anonId = localStorage.getItem('schoolChatAnonId');
+    // Генерация анонимного ID
+    let anonId = localStorage.getItem('anonId');
     if (!anonId) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let result = 'STU-';
-      for (let i = 0; i < 6; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      anonId = result;
-      localStorage.setItem('schoolChatAnonId', anonId);
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ012345';
+      anonId = 'STU-' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      localStorage.setItem('anonId', anonId);
     }
 
     // Отправка
-    const sendBtn = document.getElementById('send');
-    const textArea = document.getElementById('text');
-
-    sendBtn.addEventListener('click', () => {
-      const text = textArea.value.trim();
+    document.getElementById('send').addEventListener('click', () => {
+      const text = document.getElementById('text').value.trim();
       if (!text) {
-        if (window.Telegram && Telegram.WebApp) {
-          Telegram.WebApp.showAlert('Пожалуйста, опишите проблему или идею.');
-        } else {
-          alert('Пожалуйста, опишите проблему или идею.');
+        if (Telegram?.WebApp) {
+          Telegram.WebApp.showAlert('Введите текст!');
         }
         return;
       }
 
-      // Анимация отправки
-      sendBtn.disabled = true;
-      sendBtn.innerHTML = '<div class="sending"><div class="spinner"></div> Отправляется...</div>';
+      const data = {
+        action: 'submit',
+        anonymous_id: anonId,
+        type: category,
+        text: text
+      };
 
-      // Отправка в бота
-      setTimeout(() => {
-        const data = {
-          action: 'submit',
-          anonymous_id: anonId,
-          type: category,
-          text: text
-        };
-
-        if (window.Telegram && Telegram.WebApp) {
-          Telegram.WebApp.sendData(JSON.stringify(data));
-          // Не вызываем close() — Telegram сам закроет
-        } else {
-          alert('Ошибка: Mini App не загружен. Откройте через Telegram.');
-        }
-      }, 300);
+      if (Telegram?.WebApp) {
+        Telegram.WebApp.sendData(JSON.stringify(data));
+      }
     });
   </script>
 </body>
