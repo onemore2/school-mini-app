@@ -8,60 +8,69 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --success: #16a34a;
-      --bg: #f9fafb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --border: #e5e7eb;
+      --bg: #000;
+      --card-bg: #111;
+      --text: #fff;
+      --border: #333;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
-    body {
-      background-color: var(--bg);
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background: var(--bg);
       color: var(--text);
-      padding: 16px;
-      max-width: 500px;
-      margin: 0 auto;
+      overflow-x: hidden;
+      padding-top: 20px;
     }
 
     .header {
       text-align: center;
       margin-bottom: 24px;
+      padding: 0 16px;
     }
 
     .header h1 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: var(--primary);
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #ff0000, #fffb00, #00ffd5, #002bff, #ff00c8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .header p {
-      font-size: 14px;
-      color: #6b7280;
+      font-size: 15px;
+      opacity: 0.8;
     }
 
     .card {
-      background: var(--card);
+      background: var(--card-bg);
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      margin-bottom: 20px;
+      width: 90%;
+      max-width: 500px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px rgba(255, 0, 200, 0.2);
     }
 
     .section-title {
       font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #374151;
+      margin-bottom: 14px;
+      opacity: 0.9;
     }
 
     /* Категории */
@@ -72,21 +81,22 @@
     }
 
     .category-btn {
-      background: #f3f4f6;
-      border: 2px solid transparent;
+      background: #222;
+      border: 1px solid #444;
       border-radius: 12px;
-      padding: 16px 8px;
+      padding: 14px 8px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
-      color: #4b5563;
+      color: #ccc;
+      transition: all 0.2s;
     }
 
     .category-btn.active {
-      background: var(--primary);
+      background: #333;
       color: white;
-      border-color: var(--primary);
+      border-color: #ff00c8;
+      box-shadow: 0 0 10px rgba(255, 0, 200, 0.4);
     }
 
     .category-btn i {
@@ -103,40 +113,81 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       font-size: 16px;
+      background: #222;
+      color: white;
       resize: vertical;
       margin-bottom: 20px;
     }
 
     textarea:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      border-color: #ff00c8;
+      box-shadow: 0 0 0 2px rgba(255, 0, 200, 0.3);
     }
 
-    /* Кнопка */
-    .btn {
-      width: 100%;
-      padding: 14px;
+    textarea::placeholder {
+      color: #666;
+    }
+
+    /* Кнопка с неоновым свечением */
+    .glow-on-hover {
+      width: 90%;
+      max-width: 500px;
+      height: 56px;
       border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
+      outline: none;
+      color: #fff;
+      background: #111;
       cursor: pointer;
-      transition: background 0.2s;
+      position: relative;
+      z-index: 0;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
-    .btn-primary {
-      background: var(--success);
-      color: white;
+    .glow-on-hover:before {
+      content: '';
+      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      background-size: 400%;
+      z-index: -1;
+      filter: blur(5px);
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      animation: glowing 20s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      border-radius: 12px;
     }
 
-    .btn-primary:hover:not(:disabled) {
-      background: #15803d;
+    .glow-on-hover:active {
+      color: #000;
     }
 
-    .btn-primary:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+    .glow-on-hover:hover:before {
+      opacity: 1;
+    }
+
+    .glow-on-hover:after {
+      z-index: -1;
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      left: 0;
+      top: 0;
+      border-radius: 12px;
+    }
+
+    @keyframes glowing {
+      0% { background-position: 0 0; }
+      50% { background-position: 400% 0; }
+      100% { background-position: 0 0; }
     }
 
     /* Анимация отправки */
@@ -145,14 +196,13 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      color: var(--primary);
     }
 
     .spinner {
       width: 20px;
       height: 20px;
       border: 2px solid transparent;
-      border-top: 2px solid var(--primary);
+      border-top: 2px solid #fff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -188,14 +238,16 @@
     <textarea id="text" placeholder="Например: В спортзале не хватает мячей или В столовой долго выдают обед..."></textarea>
   </div>
 
-  <button id="send" class="btn btn-primary">✅ Отправить обращение</button>
+  <button id="send" class="glow-on-hover">✅ Отправить обращение</button>
 
   <script>
     // Инициализация Telegram WebApp
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-    Telegram.WebApp.setHeaderColor('#ffffff');
-    Telegram.WebApp.setBackgroundColor('#f9fafb');
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+      Telegram.WebApp.setHeaderColor('#000000');
+      Telegram.WebApp.setBackgroundColor('#000000');
+    }
 
     // Категория
     let category = 'idea';
@@ -207,7 +259,7 @@
       });
     });
 
-    // Получение или генерация анонимного ID
+    // Анонимный ID (сохраняется между сессиями)
     let anonId = localStorage.getItem('schoolChatAnonId');
     if (!anonId) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -226,26 +278,33 @@
     sendBtn.addEventListener('click', () => {
       const text = textArea.value.trim();
       if (!text) {
-        Telegram.WebApp.showAlert('Пожалуйста, опишите проблему или идею.');
+        if (window.Telegram && Telegram.WebApp) {
+          Telegram.WebApp.showAlert('Пожалуйста, опишите проблему или идею.');
+        } else {
+          alert('Пожалуйста, опишите проблему или идею.');
+        }
         return;
       }
 
       // Анимация отправки
       sendBtn.disabled = true;
-      sendBtn.innerHTML = '<div class="sending"><div class="spinner"></div> Отправляем...</div>';
-
-      // Подготовка данных
-      const data = {
-        action: 'submit',
-        anonymous_id: anonId,
-        type: category,
-        text: text
-      };
+      sendBtn.innerHTML = '<div class="sending"><div class="spinner"></div> Отправляется...</div>';
 
       // Отправка в бота
       setTimeout(() => {
-        Telegram.WebApp.sendData(JSON.stringify(data));
-        // Не вызываем close() — Telegram сам закроет после получения ответа
+        const data = {
+          action: 'submit',
+          anonymous_id: anonId,
+          type: category,
+          text: text
+        };
+
+        if (window.Telegram && Telegram.WebApp) {
+          Telegram.WebApp.sendData(JSON.stringify(data));
+          // Не вызываем close() — Telegram сам закроет
+        } else {
+          alert('Ошибка: Mini App не загружен. Откройте через Telegram.');
+        }
       }, 300);
     });
   </script>
