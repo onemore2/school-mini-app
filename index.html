@@ -38,6 +38,7 @@
   <script>
     let category = 'idea';
 
+    // Обработка выбора категории
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -49,6 +50,7 @@
     // Генерация анонимного ID
     const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
+    // Обработка отправки
     document.getElementById('send').addEventListener('click', () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
@@ -57,7 +59,7 @@
       }
 
       if (typeof Telegram === 'undefined' || !Telegram.WebApp) {
-        alert('Ошибка: Mini App не загружен корректно.');
+        alert('Ошибка: Mini App не загружен. Перезапустите бота.');
         return;
       }
 
