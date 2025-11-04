@@ -1,131 +1,53 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      min-height: 100vh;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 24px;
-      font-size: 24px;
-    }
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0;
-      background: #222;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 12px;
-      font-size: 16px;
-      text-align: left;
-      cursor: pointer;
-    }
-    .btn.active {
-      border-color: #ff00c8;
-      background: #333;
-    }
-    textarea {
-      width: 100%;
-      min-height: 110px;
-      padding: 14px;
-      margin: 12px 0;
-      background: #222;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 12px;
-      font-size: 16px;
-      resize: vertical;
-    }
-    #send {
-      background: #111;
-      color: white;
-      border: none;
-      font-weight: bold;
-      font-size: 18px;
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 20px;
-    }
+    body { background: #000; color: white; padding: 20px; font-family: sans-serif; }
+    button { width: 100%; padding: 14px; margin: 8px 0; background: #222; color: white; border: 1px solid #444; border-radius: 10px; }
+    textarea { width: 100%; min-height: 100px; padding: 12px; background: #222; color: white; border: 1px solid #444; border-radius: 10px; }
   </style>
 </head>
 <body>
-  <h1>📨 Школьный Чат</h1>
-
-  <div>Категория:</div>
-  <button id="idea" class="btn active">💡 Идея</button>
-  <button id="question" class="btn">❓ Вопрос</button>
-  <button id="complaint" class="btn">⚠️ Проблема</button>
-
-  <div>Текст:</div>
-  <textarea id="text" placeholder="Опишите подробно..."></textarea>
-
+  <h2>📨 Обращение</h2>
+  <button id="idea">💡 Идея</button>
+  <button id="question">❓ Вопрос</button>
+  <button id="complaint">⚠️ Проблема</button>
+  <textarea id="text" placeholder="Текст..."></textarea>
   <button id="send">✅ Отправить</button>
 
   <script>
-    // Инициализация Telegram WebApp
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
-    }
-
     let category = 'idea';
+    document.getElementById('idea').onclick = () => category = 'idea';
+    document.getElementById('question').onclick = () => category = 'question';
+    document.getElementById('complaint').onclick = () => category = 'complaint';
 
-    // Простые обработчики — без сложной логики
-    document.getElementById('idea').onclick = () => {
-      category = 'idea';
-      document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('idea').classList.add('active');
-    };
-    document.getElementById('question').onclick = () => {
-      category = 'question';
-      document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('question').classList.add('active');
-    };
-    document.getElementById('complaint').onclick = () => {
-      category = 'complaint';
-      document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('complaint').classList.add('active');
-    };
+    let anonId = localStorage.getItem('anonId') || 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    localStorage.setItem('anonId', anonId);
 
-    // Анонимный ID
-    let anonId = localStorage.getItem('anonId');
-    if (!anonId) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ012345';
-      anonId = 'STU-' + Array.from({length:6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-      localStorage.setItem('anonId', anonId);
-    }
-
-    // Отправка — используем onclick (работает в Telegram Mini App на телефонах)
     document.getElementById('send').onclick = () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
         if (Telegram?.WebApp) Telegram.WebApp.showAlert('Введите текст!');
         return;
       }
-
-      const data = {
-        action: 'submit',
-        anonymous_id: anonId,
-        type: category,
-        text: text
-      };
-
       if (Telegram?.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify(data));
+        Telegram.WebApp.sendData(JSON.stringify({
+          action: 'submit',
+          anonymous_id: anonId,
+          type: category,
+          text: text
+        }));
       }
     };
+
+    if (Telegram?.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
   </script>
 </body>
 </html>
