@@ -1,44 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f9fafb; }
-    .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    h2 { text-align: center; margin-bottom: 20px; color: #1e40af; }
-    button { padding: 10px 16px; margin: 5px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; }
-    textarea { width: 100%; height: 100px; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-    #send { background: #16a34a; color: white; width: 100%; margin-top: 15px; }
-    .category-btn { background: #e5e7eb; }
-    .category-btn.active { background: #3b82f6; color: white; }
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --border: #e5e7eb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #374151;
+    }
+
+    /* Категории */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .category-btn {
+      background: #f3f4f6;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 16px 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #4b5563;
+    }
+
+    .category-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .category-btn i {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    /* Текстовое поле */
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 16px;
+      resize: vertical;
+      margin-bottom: 20px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Кнопка */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #15803d;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Анимация отправки */
+    .sending {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--primary);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📨 Новое обращение</h2>
-
-    <div>
-      <strong>Категория:</strong><br>
-      <button class="category-btn active" data-type="idea">💡 Идея</button>
-      <button class="category-btn" data-type="question">❓ Вопрос</button>
-      <button class="category-btn" data-type="complaint">⚠️ Проблема</button>
-    </div>
-
-    <div>
-      <strong>Текст:</strong><br>
-      <textarea id="text" placeholder="Опишите подробно..."></textarea>
-    </div>
-
-    <button id="send">✅ Отправить</button>
+  <div class="header">
+    <h1>📨 Школьный Чат</h1>
+    <p>Анонимно отправь обращение администрации</p>
   </div>
 
-  <script>
-    let category = 'idea';
+  <div class="card">
+    <div class="section-title">1. Выбери категорию</div>
+    <div class="categories">
+      <button class="category-btn active" data-type="idea">
+        <i class="fas fa-lightbulb"></i> Идея
+      </button>
+      <button class="category-btn" data-type="question">
+        <i class="fas fa-question-circle"></i> Вопрос
+      </button>
+      <button class="category-btn" data-type="complaint">
+        <i class="fas fa-exclamation-triangle"></i> Проблема
+      </button>
+    </div>
+  </div>
 
-    // Обработка выбора категории
+  <div class="card">
+    <div class="section-title">2. Опиши подробно</div>
+    <textarea id="text" placeholder="Например: В спортзале не хватает мячей или В столовой долго выдают обед..."></textarea>
+  </div>
+
+  <button id="send" class="btn btn-primary">✅ Отправить обращение</button>
+
+  <script>
+    // Инициализация Telegram WebApp
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+    Telegram.WebApp.setHeaderColor('#ffffff');
+    Telegram.WebApp.setBackgroundColor('#f9fafb');
+
+    // Категория
+    let category = 'idea';
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -47,22 +207,34 @@
       });
     });
 
-    // Генерация анонимного ID
-    const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    // Получение или генерация анонимного ID
+    let anonId = localStorage.getItem('schoolChatAnonId');
+    if (!anonId) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = 'STU-';
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      anonId = result;
+      localStorage.setItem('schoolChatAnonId', anonId);
+    }
 
-    // Обработка отправки
-    document.getElementById('send').addEventListener('click', () => {
-      const text = document.getElementById('text').value.trim();
+    // Отправка
+    const sendBtn = document.getElementById('send');
+    const textArea = document.getElementById('text');
+
+    sendBtn.addEventListener('click', () => {
+      const text = textArea.value.trim();
       if (!text) {
-        alert('Введите текст обращения!');
+        Telegram.WebApp.showAlert('Пожалуйста, опишите проблему или идею.');
         return;
       }
 
-      if (typeof Telegram === 'undefined' || !Telegram.WebApp) {
-        alert('Ошибка: Mini App не загружен. Перезапустите бота.');
-        return;
-      }
+      // Анимация отправки
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<div class="sending"><div class="spinner"></div> Отправляем...</div>';
 
+      // Подготовка данных
       const data = {
         action: 'submit',
         anonymous_id: anonId,
@@ -70,8 +242,11 @@
         text: text
       };
 
-      Telegram.WebApp.sendData(JSON.stringify(data));
-      Telegram.WebApp.close();
+      // Отправка в бота
+      setTimeout(() => {
+        Telegram.WebApp.sendData(JSON.stringify(data));
+        // Не вызываем close() — Telegram сам закроет после получения ответа
+      }, 300);
     });
   </script>
 </body>
