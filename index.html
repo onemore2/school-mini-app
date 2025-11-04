@@ -6,55 +6,69 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h2>Обращение</h2>
+  <!-- Экран для телефона -->
+  <div id="mobile-view" style="display: none; padding: 20px; background: #000; color: white;">
+    <h2>📨 Школьный Чат</h2>
 
-  <button id="idea">💡 Идея</button><br>
-  <button id="question">❓ Вопрос</button><br>
-  <button id="complaint">⚠️ Проблема</button><br><br>
+    <button id="idea">💡 Идея</button><br>
+    <button id="question">❓ Вопрос</button><br>
+    <button id="complaint">⚠️ Проблема</button><br><br>
 
-  <textarea id="text" placeholder="Текст..." rows="5"></textarea><br><br>
+    <textarea id="text" placeholder="Опишите подробно..." rows="5"></textarea><br><br>
 
-  <button id="send">✅ Отправить</button>
+    <button id="send">✅ Отправить</button>
+  </div>
+
+  <!-- Экран для ПК -->
+  <div id="desktop-view" style="display: block; padding: 40px; background: #000; color: white; text-align: center;">
+    <h2>📱 Приложение доступно только с мобильной версии Telegram</h2>
+    <p>Откройте бота на телефоне, чтобы отправить обращение.</p>
+  </div>
 
   <script>
-    let category = 'idea';
+    // Определяем, мобильное ли устройство
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Обработка выбора категории
-    document.getElementById('idea').addEventListener('click', () => category = 'idea');
-    document.getElementById('question').addEventListener('click', () => category = 'question');
-    document.getElementById('complaint').addEventListener('click', () => category = 'complaint');
+    if (isMobile) {
+      document.getElementById('mobile-view').style.display = 'block';
+      document.getElementById('desktop-view').style.display = 'none';
 
-    // Генерация анонимного ID
-    let anonId = localStorage.getItem('anonId') || 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-    localStorage.setItem('anonId', anonId);
+      let category = 'idea';
 
-    // Отправка
-    const sendBtn = document.getElementById('send');
-    sendBtn.addEventListener('click', () => {
-      const text = document.getElementById('text').value.trim();
-      if (!text) {
-        if (window.Telegram && Telegram.WebApp) {
-          Telegram.WebApp.showAlert('Введите текст!');
-        } else {
-          alert('Введите текст!');
+      document.getElementById('idea').addEventListener('click', () => category = 'idea');
+      document.getElementById('question').addEventListener('click', () => category = 'question');
+      document.getElementById('complaint').addEventListener('click', () => category = 'complaint');
+
+      document.getElementById('send').addEventListener('click', () => {
+        const text = document.getElementById('text').value.trim();
+        if (!text) {
+          if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.showAlert('Введите текст!');
+          } else {
+            alert('Введите текст!');
+          }
+          return;
         }
-        return;
-      }
 
+        const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        if (window.Telegram && Telegram.WebApp) {
+          Telegram.WebApp.sendData(JSON.stringify({
+            action: 'submit',
+            anonymous_id: anonId,
+            type: category,
+            text: text
+          }));
+        }
+      });
+
+      // Инициализация Telegram WebApp
       if (window.Telegram && Telegram.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify({
-          action: 'submit',
-          anonymous_id: anonId,
-          type: category,
-          text: text
-        }));
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
       }
-    });
-
-    // Инициализация Telegram WebApp
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
+    } else {
+      // Если не мобильное устройство — оставляем desktop-view
     }
   </script>
 </body>
