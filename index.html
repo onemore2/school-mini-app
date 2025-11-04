@@ -2,54 +2,67 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body>
-  <h2>📨 Новое обращение</h2>
-
-  <div>
-    <strong>Категория:</strong><br>
-    <button id="idea">💡 Идея</button>
-    <button id="question">❓ Вопрос</button>
-    <button id="complaint">⚠️ Проблема</button>
+<body style="margin:0; padding:20px; background:#000; color:#fff; font-family:sans-serif;">
+  <!-- ПК-экран -->
+  <div id="desktop" style="display:block; text-align:center;">
+    <h2>📱 Приложение доступно только с мобильной версии Telegram</h2>
+    <p>Откройте бота на телефоне, чтобы отправить обращение.</p>
   </div>
 
-  <div>
-    <strong>Текст:</strong><br>
-    <textarea id="text" placeholder="Опишите подробно..."></textarea>
+  <!-- Мобильный экран -->
+  <div id="mobile" style="display:none;">
+    <h2>📨 Школьный Чат</h2>
+    <button id="idea" style="display:block; width:100%; padding:12px; margin:6px 0; background:#222; color:white; border:1px solid #444;">💡 Идея</button>
+    <button id="question" style="display:block; width:100%; padding:12px; margin:6px 0; background:#222; color:white; border:1px solid #444;">❓ Вопрос</button>
+    <button id="complaint" style="display:block; width:100%; padding:12px; margin:6px 0; background:#222; color:white; border:1px solid #444;">⚠️ Проблема</button>
+    <textarea id="text" placeholder="Опишите подробно..." rows="5" style="width:100%; padding:10px; margin:10px 0; background:#222; color:white; border:1px solid #444;"></textarea>
+    <button id="send" style="width:100%; padding:14px; background:green; color:white; border:none; font-weight:bold;">✅ Отправить</button>
   </div>
-
-  <button id="send" style="background: green; color: white;">✅ Отправить</button>
 
   <script>
-    let category = 'idea';
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    document.getElementById('idea').onclick = () => category = 'idea';
-    document.getElementById('question').onclick = () => category = 'question';
-    document.getElementById('complaint').onclick = () => category = 'complaint';
+    if (isMobile) {
+      document.getElementById('desktop').style.display = 'none';
+      document.getElementById('mobile').style.display = 'block';
 
-    // Генерация анонимного ID
-    const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      let category = 'idea';
 
-    document.getElementById('send').onclick = () => {
-      const text = document.getElementById('text').value.trim();
-      if (!text) {
-        alert('Введите текст обращения!');
-        return;
-      }
+      document.getElementById('idea').onclick = () => category = 'idea';
+      document.getElementById('question').onclick = () => category = 'question';
+      document.getElementById('complaint').onclick = () => category = 'complaint';
 
-      const data = {
-        action: 'submit',
-        anonymous_id: anonId,
-        type: category,
-        text: text
+      document.getElementById('send').onclick = () => {
+        const text = document.getElementById('text').value.trim();
+        if (!text) {
+          if (Telegram?.WebApp) {
+            Telegram.WebApp.showAlert('Введите текст!');
+          }
+          return;
+        }
+
+        const anonId = 'STU-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+        const data = {
+          action: 'submit',
+          anonymous_id: anonId,
+          type: category,
+          text: text
+        };
+
+        // Отправляем данные — Mini App закроется автоматически
+        Telegram.WebApp.sendData(JSON.stringify(data));
       };
 
-      Telegram.WebApp.sendData(JSON.stringify(data));
-      Telegram.WebApp.close();
-    };
+      if (Telegram?.WebApp) {
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+      }
+    }
   </script>
 </body>
 </html>
