@@ -19,21 +19,28 @@
   <script>
     let category = 'idea';
 
-    document.getElementById('idea').onclick = () => category = 'idea';
-    document.getElementById('question').onclick = () => category = 'question';
-    document.getElementById('complaint').onclick = () => category = 'complaint';
+    // Обработка выбора категории
+    document.getElementById('idea').addEventListener('click', () => category = 'idea');
+    document.getElementById('question').addEventListener('click', () => category = 'question');
+    document.getElementById('complaint').addEventListener('click', () => category = 'complaint');
 
-    document.getElementById('send').onclick = () => {
+    // Генерация анонимного ID
+    let anonId = localStorage.getItem('anonId') || 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    localStorage.setItem('anonId', anonId);
+
+    // Отправка
+    const sendBtn = document.getElementById('send');
+    sendBtn.addEventListener('click', () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
-        alert('Введите текст!');
+        if (window.Telegram && Telegram.WebApp) {
+          Telegram.WebApp.showAlert('Введите текст!');
+        } else {
+          alert('Введите текст!');
+        }
         return;
       }
 
-      // Генерация анонимного ID (простой)
-      const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-      // Отправка данных в бот
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.sendData(JSON.stringify({
           action: 'submit',
@@ -42,7 +49,7 @@
           text: text
         }));
       }
-    };
+    });
 
     // Инициализация Telegram WebApp
     if (window.Telegram && Telegram.WebApp) {
