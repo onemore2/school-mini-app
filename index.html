@@ -1,234 +1,57 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Школьный Чат</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    :root {
-      --bg: #000;
-      --card-bg: #111;
-      --text: #fff;
-      --border: #333;
-    }
+<script>
+  if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+    Telegram.WebApp.setHeaderColor('#000000');
+    Telegram.WebApp.setBackgroundColor('#000000');
+  }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px 16px;
-      max-width: 100vw;
-      overflow-x: hidden;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .header h1 {
-      font-size: 26px;
-      margin-bottom: 6px;
-      background: linear-gradient(90deg, #ff0000, #fffb00, #00ffd5, #002bff, #ff00c8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .section {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-size: 16px;
-      margin-bottom: 14px;
-      opacity: 0.9;
-    }
-
-    .categories {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .category-btn {
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #ccc;
-    }
-
-    .category-btn.active {
-      background: #333;
-      color: white;
-      border-color: #ff00c8;
-    }
-
-    .category-btn i {
-      margin-right: 6px;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 110px;
-      padding: 14px;
-      border: 1px solid #444;
-      border-radius: 12px;
-      font-size: 16px;
-      background: #222;
-      color: white;
-      resize: vertical;
-      margin-top: 12px;
-    }
-
-    textarea::placeholder {
-      color: #666;
-    }
-
-    .send-btn {
-      width: 100%;
-      height: 56px;
-      border: none;
-      outline: none;
-      color: #fff;
-      background: #111;
-      cursor: pointer;
-      position: relative;
-      z-index: 0;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .send-btn:before {
-      content: '';
-      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      background-size: 400%;
-      z-index: -1;
-      filter: blur(5px);
-      width: calc(100% + 4px);
-      height: calc(100% + 4px);
-      animation: glowing 20s linear infinite;
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      border-radius: 12px;
-    }
-
-    .send-btn:hover:before {
-      opacity: 1;
-    }
-
-    .send-btn:after {
-      z-index: -1;
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: #111;
-      left: 0;
-      top: 0;
-      border-radius: 12px;
-    }
-
-    @keyframes glowing {
-      0% { background-position: 0 0; }
-      50% { background-position: 400% 0; }
-      100% { background-position: 0 0; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>🏫 Школьный Чат</h1>
-    </div>
-
-    <div class="section">
-      <div class="section-title">1. Категория</div>
-      <div class="categories">
-        <button class="category-btn active" data-type="idea"><i class="fas fa-lightbulb"></i> Идея</button>
-        <button class="category-btn" data-type="question"><i class="fas fa-question-circle"></i> Вопрос</button>
-        <button class="category-btn" data-type="complaint"><i class="fas fa-exclamation-triangle"></i> Проблема</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">2. Текст обращения</div>
-      <textarea id="text" placeholder="Опишите подробно..."></textarea>
-    </div>
-
-    <button id="send" class="send-btn">✅ Отправить</button>
-  </div>
-
-  <script>
-    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
-      Telegram.WebApp.setHeaderColor('#000000');
-      Telegram.WebApp.setBackgroundColor('#000000');
-    }
-
-    let category = 'idea';
-    document.querySelectorAll('.category-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        category = btn.dataset.type;
-      });
+  let category = 'idea';
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    // Используем pointerup — работает везде
+    btn.addEventListener('pointerup', () => {
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      category = btn.dataset.type;
     });
+  });
 
-    let anonId = localStorage.getItem('anonId');
-    if (!anonId) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ012345';
-      anonId = 'STU-' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-      localStorage.setItem('anonId', anonId);
-    }
+  let anonId = localStorage.getItem('anonId');
+  if (!anonId) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ012345';
+    anonId = 'STU-' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    localStorage.setItem('anonId', anonId);
+  }
 
-    document.getElementById('send').addEventListener('click', () => {
-      const text = document.getElementById('text').value.trim();
-      if (!text) {
-        if (Telegram?.WebApp) {
-          Telegram.WebApp.showAlert('Введите текст!');
-        }
-        return;
-      }
+  const sendBtn = document.getElementById('send');
+  const textArea = document.getElementById('text');
 
-      const data = {
-        action: 'submit',
-        anonymous_id: anonId,
-        type: category,
-        text: text
-      };
-
+  // Основной обработчик — pointerup (работает на ПК и на телефоне)
+  sendBtn.addEventListener('pointerup', () => {
+    const text = textArea.value.trim();
+    if (!text) {
       if (Telegram?.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify(data));
+        Telegram.WebApp.showAlert('Введите текст обращения!');
       }
-    });
-  </script>
-</body>
-</html>
+      return;
+    }
 
+    const data = {
+      action: 'submit',
+      anonymous_id: anonId,
+      type: category,
+      text: text
+    };
+
+    if (Telegram?.WebApp) {
+      Telegram.WebApp.sendData(JSON.stringify(data));
+    }
+  });
+
+  // Дополнительно: обработка Enter в поле (опционально)
+  textArea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      sendBtn.dispatchEvent(new PointerEvent('pointerup'));
+    }
+  });
+</script>
