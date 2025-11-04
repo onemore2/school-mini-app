@@ -2,113 +2,38 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #000;
-      color: white;
-      font-family: system-ui, sans-serif;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    button {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0;
-      background: #222;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      text-align: left;
-    }
-    button.active {
-      border-color: #ff00c8;
-      background: #333;
-    }
-    textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px;
-      margin: 12px 0;
-      background: #222;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 10px;
-      font-size: 16px;
-      resize: vertical;
-    }
-    #send {
-      background: green;
-      color: white;
-      border: none;
-      font-weight: bold;
-      font-size: 18px;
-    }
-  </style>
 </head>
-<body>
-  <h2>📨 Школьный Чат</h2>
-
-  <button id="idea" class="active">💡 Идея</button>
-  <button id="question">❓ Вопрос</button>
-  <button id="complaint">⚠️ Проблема</button>
-
-  <textarea id="text" placeholder="Опишите подробно..."></textarea>
-
-  <button id="send">✅ Отправить</button>
+<body style="background:#000;color:#fff;padding:20px;font-family:sans-serif;">
+  <h2>📨 Обращение</h2>
+  <button id="idea">💡 Идея</button><br>
+  <button id="question">❓ Вопрос</button><br>
+  <button id="complaint">⚠️ Проблема</button><br><br>
+  <textarea id="text" placeholder="Текст..." rows="4" style="width:100%;background:#222;color:#fff;border:1px solid #444;padding:10px;"></textarea><br><br>
+  <button id="send" style="width:100%;padding:12px;background:green;color:white;border:none;font-weight:bold;">✅ Отправить</button>
 
   <script>
     let category = 'idea';
-
-    document.getElementById('idea').onclick = () => {
-      category = 'idea';
-      document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      document.getElementById('idea').classList.add('active');
-    };
-    document.getElementById('question').onclick = () => {
-      category = 'question';
-      document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      document.getElementById('question').classList.add('active');
-    };
-    document.getElementById('complaint').onclick = () => {
-      category = 'complaint';
-      document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      document.getElementById('complaint').classList.add('active');
-    };
-
-    let anonId = localStorage.getItem('schoolAnonId');
-    if (!anonId) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      anonId = 'STU-' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-      localStorage.setItem('schoolAnonId', anonId);
-    }
+    document.getElementById('idea').onclick = () => category = 'idea';
+    document.getElementById('question').onclick = () => category = 'question';
+    document.getElementById('complaint').onclick = () => category = 'complaint';
 
     document.getElementById('send').onclick = () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
-        if (Telegram?.WebApp) {
-          Telegram.WebApp.showAlert('Введите текст!');
-        }
+        if (Telegram?.WebApp) Telegram.WebApp.showAlert('Введите текст!');
         return;
       }
-
-      const data = {
-        action: 'submit',
-        anonymous_id: anonId,
-        type: category,
-        text: text
-      };
-
-      Telegram.WebApp.sendData(JSON.stringify(data));
+      const anonId = 'STU-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      if (Telegram?.WebApp) {
+        Telegram.WebApp.sendData(JSON.stringify({
+          action: 'submit',
+          anonymous_id: anonId,
+          type: category,
+          text: text
+        }));
+      }
     };
 
     if (Telegram?.WebApp) {
