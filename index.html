@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Школьный Чат</title>
-  <!-- ВАЖНО: без пробелов в ссылке -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
@@ -186,7 +185,6 @@
   </div>
 
   <script>
-    // Инициализация Telegram WebApp
     if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
@@ -194,7 +192,6 @@
       Telegram.WebApp.setBackgroundColor('#000000');
     }
 
-    // Анонимный ID (сохраняется между сессиями)
     let anonId = localStorage.getItem('schoolChatAnonId');
     if (!anonId) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -202,7 +199,6 @@
       localStorage.setItem('schoolChatAnonId', anonId);
     }
 
-    // Выбор категории с поддержкой touch
     let category = 'idea';
     const categoryButtons = document.querySelectorAll('.category-btn');
     categoryButtons.forEach(btn => {
@@ -213,7 +209,6 @@
       });
     });
 
-    // Отправка с поддержкой ПК и телефона
     const sendBtn = document.getElementById('send');
     const textArea = document.getElementById('text');
 
