@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <title>Школьный Чат</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     
     body {
@@ -16,218 +18,154 @@
       color: white;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       min-height: 100vh;
-      padding: 20px;
-      line-height: 1.6;
+      padding: 15px;
+      line-height: 1.5;
     }
     
     .container {
       max-width: 100%;
+      margin: 0 auto;
     }
     
     .header {
       text-align: center;
-      margin-bottom: 30px;
-      padding: 25px 0;
+      margin-bottom: 20px;
+      padding: 20px 0;
     }
     
     .header h1 {
-      font-size: 26px;
-      margin-bottom: 8px;
+      font-size: 22px;
+      margin-bottom: 5px;
       font-weight: 600;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     
     .header p {
       opacity: 0.9;
-      font-size: 15px;
-      font-weight: 300;
+      font-size: 14px;
     }
     
     .card {
       background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
     
     .category-buttons {
       display: grid;
-      gap: 12px;
-      margin-bottom: 25px;
+      gap: 8px;
+      margin-bottom: 20px;
     }
     
     .category-btn {
       background: rgba(255, 255, 255, 0.15);
       border: 2px solid transparent;
-      border-radius: 16px;
-      padding: 18px 20px;
+      border-radius: 12px;
+      padding: 14px 16px;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .category-btn:hover {
-      background: rgba(255, 255, 255, 0.22);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
     
     .category-btn.active {
       background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      border-color: rgba(255, 255, 255, 0.3);
     }
     
-    .category-icon {
-      font-size: 20px;
-      width: 24px;
-      text-align: center;
-    }
-    
-    .textarea-container {
-      margin: 25px 0;
+    .category-btn:active {
+      transform: scale(0.98);
     }
     
     textarea {
       width: 100%;
       background: rgba(255, 255, 255, 0.1);
       border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 12px;
+      padding: 14px;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       resize: vertical;
-      min-height: 130px;
+      min-height: 100px;
       font-family: inherit;
-      transition: all 0.3s ease;
+      margin: 15px 0;
     }
     
     textarea::placeholder {
       color: rgba(255, 255, 255, 0.6);
     }
     
-    textarea:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    }
-    
     .send-btn {
       width: 100%;
-      background: linear-gradient(135deg, #4CAF50, #45a049);
+      background: #4CAF50;
       border: none;
-      border-radius: 16px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 16px;
       color: white;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       margin-top: 10px;
-      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    .send-btn:hover:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
     }
     
     .send-btn:active {
-      transform: translateY(-1px);
+      transform: scale(0.98);
+      background: #45a049;
     }
     
     .send-btn:disabled {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
     }
     
     .status {
       text-align: center;
-      padding: 18px;
-      border-radius: 16px;
-      margin: 20px 0;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      font-size: 15px;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 15px 0;
+      font-size: 14px;
     }
     
     .status.success {
-      background: rgba(76, 175, 80, 0.25);
-      border: 1px solid rgba(76, 175, 80, 0.4);
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.3);
     }
     
     .status.error {
-      background: rgba(244, 67, 54, 0.25);
-      border: 1px solid rgba(244, 67, 54, 0.4);
+      background: rgba(244, 67, 54, 0.2);
+      border: 1px solid rgba(244, 67, 54, 0.3);
     }
     
     .status.info {
-      background: rgba(33, 150, 243, 0.25);
-      border: 1px solid rgba(33, 150, 243, 0.4);
+      background: rgba(33, 150, 243, 0.2);
+      border: 1px solid rgba(33, 150, 243, 0.3);
     }
     
     .anonymous-id {
       background: rgba(255, 255, 255, 0.1);
-      padding: 16px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
       text-align: center;
-      margin: 20px 0;
+      margin: 15px 0;
       font-family: 'Courier New', monospace;
-      font-size: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      font-weight: 500;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .instructions {
-      font-size: 14px;
-      opacity: 0.85;
-      line-height: 1.5;
-      margin-top: 20px;
+      font-size: 13px;
+      opacity: 0.8;
+      line-height: 1.4;
+      margin-top: 15px;
       text-align: center;
-      padding: 15px;
+      padding: 12px;
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-    }
-    
-    @media (max-width: 480px) {
-      body {
-        padding: 15px;
-      }
-      
-      .card {
-        padding: 22px;
-      }
-      
-      .category-btn {
-        padding: 16px 18px;
-        font-size: 15px;
-      }
-      
-      textarea {
-        padding: 16px;
-        font-size: 15px;
-      }
-      
-      .send-btn {
-        padding: 18px;
-        font-size: 17px;
-      }
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -235,42 +173,32 @@
   <div class="container">
     <div class="header">
       <h1>📨 Школьный Чат</h1>
-      <p>Анонимные обращения и предложения</p>
+      <p>Анонимные обращения</p>
     </div>
     
     <div class="card">
       <div class="category-buttons">
-        <button class="category-btn active" data-category="idea">
-          <span class="category-icon">💡</span>Идея
-        </button>
-        <button class="category-btn" data-category="question">
-          <span class="category-icon">❓</span>Вопрос
-        </button>
-        <button class="category-btn" data-category="complaint">
-          <span class="category-icon">⚠️</span>Проблема
-        </button>
+        <button class="category-btn active" data-category="idea">💡 Идея</button>
+        <button class="category-btn" data-category="question">❓ Вопрос</button>
+        <button class="category-btn" data-category="complaint">⚠️ Проблема</button>
       </div>
       
-      <div class="textarea-container">
-        <textarea 
-          id="text" 
-          placeholder="Опишите ваше обращение подробно..." 
-          rows="5"
-        ></textarea>
-      </div>
+      <textarea 
+        id="text" 
+        placeholder="Опишите ваше обращение..." 
+        rows="4"
+      ></textarea>
       
       <div id="status"></div>
       
       <div class="anonymous-id">
-        🔐 Ваш анонимный ID: <span id="anonymousId">...</span>
+        Ваш ID: <span id="anonymousId">...</span>
       </div>
       
-      <button id="send" class="send-btn">
-        <span>✅</span> Отправить обращение
-      </button>
+      <button id="send" class="send-btn">✅ Отправить</button>
       
       <div class="instructions">
-        💡 <strong>Подсказка:</strong> Опишите ситуацию максимально подробно для быстрого решения вопроса
+        💡 Опишите ситуацию подробно для быстрого решения
       </div>
     </div>
   </div>
@@ -279,11 +207,9 @@
     // Telegram WebApp
     let tg = window.Telegram.WebApp;
     
-    // Инициализация
+    // Инициализация для мобильных
     tg.expand();
     tg.enableClosingConfirmation();
-    tg.setHeaderColor('#667eea');
-    tg.setBackgroundColor('#667eea');
     
     // Переменные
     let category = 'idea';
@@ -319,38 +245,29 @@
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         category = btn.getAttribute('data-category');
-        
-        // Обновляем placeholder
-        const textarea = document.getElementById('text');
-        const placeholders = {
-          'idea': 'Опишите вашу идею по улучшению школы...',
-          'question': 'Задайте ваш вопрос подробно...',
-          'complaint': 'Опишите проблему, с которой столкнулись...'
-        };
-        textarea.placeholder = placeholders[category] || 'Опишите подробно...';
       });
     });
     
     // Отправка данных
-    document.getElementById('send').addEventListener('click', () => {
+    document.getElementById('send').addEventListener('click', function() {
       const text = document.getElementById('text').value.trim();
       const statusDiv = document.getElementById('status');
       
       if (!text) {
-        statusDiv.innerHTML = '<div class="status error">❌ Пожалуйста, введите текст обращения</div>';
+        statusDiv.innerHTML = '<div class="status error">❌ Введите текст</div>';
         return;
       }
       
-      if (text.length < 5) {
-        statusDiv.innerHTML = '<div class="status error">❌ Текст слишком короткий. Опишите подробнее</div>';
+      if (text.length < 3) {
+        statusDiv.innerHTML = '<div class="status error">❌ Текст слишком короткий</div>';
         return;
       }
       
       const sendBtn = document.getElementById('send');
       sendBtn.disabled = true;
-      sendBtn.innerHTML = '<span>⏳</span> Отправка...';
+      sendBtn.textContent = '⏳ Отправка...';
       
-      statusDiv.innerHTML = '<div class="status info">📤 Отправка обращения...</div>';
+      statusDiv.innerHTML = '<div class="status info">📤 Отправка...</div>';
       
       // Подготовка данных
       const data = {
@@ -363,26 +280,31 @@
       
       console.log('Отправка данных:', data);
       
-      // Отправка в бота
-      tg.sendData(JSON.stringify(data));
-      
-      // Успешная отправка
-      setTimeout(() => {
-        statusDiv.innerHTML = '<div class="status success">✅ Обращение отправлено! Закройте окно.</div>';
-        sendBtn.innerHTML = '<span>✅</span> Отправлено';
+      try {
+        // Отправка в бота
+        tg.sendData(JSON.stringify(data));
         
-        // Очистка и новый ID
-        document.getElementById('text').value = '';
-        initAnonymousId();
+        // Успешная отправка
+        setTimeout(() => {
+          statusDiv.innerHTML = '<div class="status success">✅ Отправлено!</div>';
+          sendBtn.textContent = '✅ Отправлено';
+          
+          // Очистка и новый ID
+          document.getElementById('text').value = '';
+          initAnonymousId();
+          
+          // Автозакрытие через 2 секунды
+          setTimeout(() => {
+            tg.close();
+          }, 2000);
+          
+        }, 1000);
         
-      }, 1000);
-    });
-    
-    // Обработка изменения текста
-    document.getElementById('text').addEventListener('input', function() {
-      const statusDiv = document.getElementById('status');
-      if (this.value.trim().length > 0) {
-        statusDiv.innerHTML = '';
+      } catch (error) {
+        console.error('Ошибка отправки:', error);
+        statusDiv.innerHTML = '<div class="status error">❌ Ошибка отправки</div>';
+        sendBtn.disabled = false;
+        sendBtn.textContent = '✅ Отправить';
       }
     });
     
@@ -390,13 +312,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       initAnonymousId();
       document.getElementById('text').focus();
-    });
-    
-    // Горячие клавиши
-    document.getElementById('text').addEventListener('keydown', function(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        document.getElementById('send').click();
-      }
     });
   </script>
 </body>
