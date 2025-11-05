@@ -23,67 +23,43 @@
             margin: 10px;
             cursor: pointer;
         }
-        .message {
-            background: #f8f9fa;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border-left: 4px solid #0088cc;
-        }
-        .success {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #155724;
-        }
-        .timestamp {
-            color: #666;
-            font-size: 14px;
-            margin-top: 10px;
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-    <!-- Ваш текущий интерфейс -->
     <h1>MR.PRIZIDENT</h1>
     
-    <div class="message">
-        Нажмите кнопку ниже для открытия удобного интерфейса:
-    </div>
+    <p>Нажмите кнопку ниже для открытия удобного интерфейса:</p>
 
     <button class="btn" onclick="sendAppeal()">Открыть мини-приложение</button>
 
-    <div class="message">
-        Вы успешно передали данные боту кнопкой «Открыть мини-приложение».
-    </div>
+    <p>Вы успешно передали данные боту кнопкой «Открыть мини-приложение».</p>
 
-    <hr style="margin: 20px 0;">
+    <hr>
 
-    <!-- Блок обращения -->
+    <!-- Этот блок показывается после отправки -->
     <div id="appealBlock" style="display: none;">
-        <div class="message">
-            <strong>НОВОЕ ОБРАЩЕНИЕ ИЗ WEBAPP</strong><br>
-            Анонимный ID: <span id="anonId">STU-XwTM1</span><br>
-            Тип: 7 Вопрос<br>
-            Время: <span id="appealTime">05.11.2025 17:56</span><br>
-            Текст: фьюрфильтры
-        </div>
+        <h2>НОВОЕ ОБРАЩЕНИЕ ИЗ WEBAPP</h2>
+        <p>Анонимный ID: <span id="anonId">STU-7Q9H</span></p>
+        <p>Тип: 7 Вопрос</p>
+        <p>Время: <span id="appealTime">05.11.2025, 18:12</span></p>
+        <p>Текст: фьюрфильтры</p>
 
-        <div class="message success">
-            <strong>✅ ОБРАЩЕНИЕ УСПЕШНО ОТПРАВЛЕНО!</strong><br>
-            - Ваш анонимный номер: <span id="successAnonId">STU-XwTM1</span><br>
-            - Тип: 7 Вопрос<br>
-            - Время: <span id="successTime">05.11.2025 17:56</span>
-        </div>
+        <hr>
 
-        <div class="message">
-            Спасибо за ваше обращение!
-        </div>
+        <h3>ОБРАЩЕНИЕ УСПЕШНО ОТПРАВЛЕНО!</h3>
+        <p>- Ваш анонимный номер: <span id="successAnonId">STU-7Q9H</span></p>
+        <p>- Тип: 7 Вопрос</p>
+        <p>- Время: <span id="successTime">05.11.2025, 18:12</span></p>
+
+        <p>Спасибо за ваше обращение!</p>
     </div>
-
-    <div class="timestamp" id="currentTime"></div>
 
     <script>
-        // Генерация случайного ID
         function generateAnonId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = 'STU-';
@@ -93,7 +69,6 @@
             return result;
         }
 
-        // Получение текущего времени
         function getCurrentTime() {
             const now = new Date();
             return now.toLocaleString('ru-RU', {
@@ -105,31 +80,26 @@
             });
         }
 
-        // Основная функция отправки
         function sendAppeal() {
-            // Проверяем, что мы в Telegram WebApp
             if (!window.Telegram || !Telegram.WebApp) {
                 alert('Откройте в Telegram на смартфоне');
                 return;
             }
 
             const tg = Telegram.WebApp;
-            
-            // Генерируем новые данные
             const anonId = generateAnonId();
             const currentTime = getCurrentTime();
 
-            // Обновляем данные на странице
+            // Обновляем данные
             document.getElementById('anonId').textContent = anonId;
             document.getElementById('appealTime').textContent = currentTime;
             document.getElementById('successAnonId').textContent = anonId;
             document.getElementById('successTime').textContent = currentTime;
-            document.getElementById('currentTime').textContent = currentTime.split(' ')[1]; // Только время
 
             // Показываем блок с обращением
             document.getElementById('appealBlock').style.display = 'block';
 
-            // Данные для отправки боту
+            // Отправляем данные в бота
             const data = {
                 action: 'new_appeal',
                 anonymous_id: anonId,
@@ -138,25 +108,19 @@
                 time: currentTime
             };
 
-            // Отправляем данные в бота
             tg.sendData(JSON.stringify(data));
             
             // Прокручиваем к результату
             document.getElementById('appealBlock').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Инициализация
         function init() {
             if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-                
-                // Обновляем время при загрузке
-                document.getElementById('currentTime').textContent = getCurrentTime().split(' ')[1];
             }
         }
 
-        // Запускаем при загрузке
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
