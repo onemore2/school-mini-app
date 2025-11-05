@@ -6,64 +6,166 @@
     <title>MR.PRIZIDENT</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background: white;
-            text-align: center;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .btn {
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 100%;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin: 15px 0 10px 0;
+            font-size: 18px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin: 12px 0 8px 0;
+            font-size: 16px;
+        }
+        
+        .problem-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0088cc;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: #e8f5e8;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .checkbox-item input {
+            margin-right: 10px;
+        }
+        
+        .id-section {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .send-btn {
             background: #0088cc;
             color: white;
             border: none;
             padding: 12px 30px;
             border-radius: 8px;
             font-size: 16px;
-            margin: 10px;
             cursor: pointer;
+            margin: 15px 0;
+            width: 100%;
+            font-weight: bold;
         }
+        
+        .send-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .hint {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 4px solid #ffc107;
+            font-size: 14px;
+            color: #856404;
+        }
+        
         hr {
             margin: 20px 0;
             border: none;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .desktop-message {
+            display: none;
+            text-align: center;
+            padding: 50px 20px;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <h1>MR.PRIZIDENT</h1>
-    
-    <p>Нажмите кнопку ниже для открытия удобного интерфейса:</p>
+    <div id="desktopMessage" class="desktop-message">
+        <h2>📱 Мобильное приложение</h2>
+        <p>Это мини-приложение доступно только в мобильной версии Telegram</p>
+        <p><strong>Откройте Telegram на смартфоне</strong></p>
+    </div>
 
-    <button class="btn" onclick="sendAppeal()">Открыть мини-приложение</button>
+    <div id="mobileApp" class="container">
+        <h1>MR.PRIZIDENT</h1>
+        
+        <h2>Вопрос</h2>
+        
+        <div class="problem-section">
+            <h3>Проблема</h3>
+            <p>Опишите ваше обращение подробно...</p>
+        </div>
 
-    <p>Вы успешно передали данные боту кнопкой «Открыть мини-приложение».</p>
+        <div id="successSection" style="display: none;">
+            <div class="checkbox-item">
+                <input type="checkbox" checked disabled>
+                <span>Обращение отправлено! Закройте окно.</span>
+            </div>
 
-    <hr>
+            <hr>
 
-    <!-- Этот блок показывается после отправки -->
-    <div id="appealBlock" style="display: none;">
-        <h2>НОВОЕ ОБРАЩЕНИЕ ИЗ WEBAPP</h2>
-        <p>Анонимный ID: <span id="anonId">STU-7Q9H</span></p>
-        <p>Тип: 7 Вопрос</p>
-        <p>Время: <span id="appealTime">05.11.2025, 18:12</span></p>
-        <p>Текст: фьюрфильтры</p>
+            <div class="id-section">
+                <p>Ваш анонимный ID: <strong id="anonId">STU-SBXR65</strong></p>
+            </div>
 
-        <hr>
+            <button class="send-btn" disabled>Отправлено</button>
+        </div>
 
-        <h3>ОБРАЩЕНИЕ УСПЕШНО ОТПРАВЛЕНО!</h3>
-        <p>- Ваш анонимный номер: <span id="successAnonId">STU-7Q9H</span></p>
-        <p>- Тип: 7 Вопрос</p>
-        <p>- Время: <span id="successTime">05.11.2025, 18:12</span></p>
+        <div id="sendSection">
+            <button class="send-btn" onclick="sendAppeal()">Отправить обращение</button>
+        </div>
 
-        <p>Спасибо за ваше обращение!</p>
+        <div class="hint">
+            Подсказка: Опишите ситуацию максимально подробно для быстрого решения вопроса
+        </div>
     </div>
 
     <script>
         function generateAnonId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = 'STU-';
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 6; i++) {
                 result += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             return result;
@@ -81,8 +183,9 @@
         }
 
         function sendAppeal() {
+            // Проверяем, что мы в Telegram WebApp
             if (!window.Telegram || !Telegram.WebApp) {
-                alert('Откройте в Telegram на смартфоне');
+                alert('Откройте приложение в мобильном Telegram');
                 return;
             }
 
@@ -90,14 +193,10 @@
             const anonId = generateAnonId();
             const currentTime = getCurrentTime();
 
-            // Обновляем данные
+            // Показываем секцию успеха
+            document.getElementById('successSection').style.display = 'block';
+            document.getElementById('sendSection').style.display = 'none';
             document.getElementById('anonId').textContent = anonId;
-            document.getElementById('appealTime').textContent = currentTime;
-            document.getElementById('successAnonId').textContent = anonId;
-            document.getElementById('successTime').textContent = currentTime;
-
-            // Показываем блок с обращением
-            document.getElementById('appealBlock').style.display = 'block';
 
             // Отправляем данные в бота
             const data = {
@@ -110,18 +209,30 @@
 
             tg.sendData(JSON.stringify(data));
             
-            // Прокручиваем к результату
-            document.getElementById('appealBlock').scrollIntoView({ behavior: 'smooth' });
+            // Разворачиваем WebApp на весь экран
+            tg.expand();
         }
 
-        function init() {
-            if (window.Telegram && Telegram.WebApp) {
+        function initApp() {
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const isTelegram = window.Telegram && Telegram.WebApp;
+
+            if (isMobile && isTelegram) {
+                // Мобильное устройство + Telegram WebApp
+                document.getElementById('desktopMessage').style.display = 'none';
+                document.getElementById('mobileApp').style.display = 'block';
+                
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
+            } else {
+                // ПК или не Telegram
+                document.getElementById('desktopMessage').style.display = 'block';
+                document.getElementById('mobileApp').style.display = 'none';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        // Запускаем при загрузке
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
