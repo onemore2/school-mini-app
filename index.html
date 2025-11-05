@@ -14,7 +14,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
             padding: 20px;
             color: #333;
@@ -23,16 +23,44 @@
         .container {
             max-width: 100%;
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-size: 24px;
+        }
+        
+        .btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        .message {
+            margin: 15px 0;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .timestamp {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Стили для интерфейса обращения */
+        .appeal-interface {
+            display: none;
+            margin-top: 20px;
         }
         
         h2 {
@@ -63,10 +91,6 @@
             background: #e8f5e8;
             border-radius: 6px;
             border-left: 4px solid #28a745;
-        }
-        
-        .checkbox-item input {
-            margin-right: 10px;
         }
         
         .id-section {
@@ -112,52 +136,81 @@
             border-top: 1px solid #e0e0e0;
         }
         
-        .desktop-message {
-            display: none;
-            text-align: center;
-            padding: 50px 20px;
-            color: white;
+        /* Адаптация для ПК */
+        @media (min-width: 768px) {
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+            }
+            
+            .container {
+                background: white;
+                border-radius: 12px;
+                padding: 30px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                max-width: 500px;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="desktopMessage" class="desktop-message">
-        <h2>📱 Мобильное приложение</h2>
-        <p>Это мини-приложение доступно только в мобильной версии Telegram</p>
-        <p><strong>Откройте Telegram на смартфоне</strong></p>
-    </div>
-
-    <div id="mobileApp" class="container">
-        <h1>MR.PRIZIDENT</h1>
-        
-        <h2>Вопрос</h2>
-        
-        <div class="problem-section">
-            <h3>Проблема</h3>
-            <p>Опишите ваше обращение подробно...</p>
-        </div>
-
-        <div id="successSection" style="display: none;">
-            <div class="checkbox-item">
-                <input type="checkbox" checked disabled>
-                <span>Обращение отправлено! Закройте окно.</span>
+    <div class="container">
+        <!-- Первый интерфейс (главный) -->
+        <div id="mainInterface">
+            <h1>MR.PRIZIDENT</h1>
+            
+            <div class="message">
+                Нажмите кнопку ниже для открытия удобного интерфейса:
             </div>
 
-            <hr>
+            <button class="btn" onclick="openAppInterface()">Открыть мини-приложение</button>
 
-            <div class="id-section">
-                <p>Ваш анонимный ID: <strong id="anonId">STU-SBXR65</strong></p>
+            <div class="message">
+                Вы успешно передали данные боту кнопкой «Открыть мини-приложение».
             </div>
 
-            <button class="send-btn" disabled>Отправлено</button>
+            <div class="timestamp" id="currentTime"></div>
         </div>
 
-        <div id="sendSection">
-            <button class="send-btn" onclick="sendAppeal()">Отправить обращение</button>
-        </div>
+        <!-- Второй интерфейс (обращение) -->
+        <div id="appealInterface" class="appeal-interface">
+            <h1>MR.PRIZIDENT</h1>
+            
+            <h2>Вопрос</h2>
+            
+            <div class="problem-section">
+                <h3>Проблема</h3>
+                <p>Опишите ваше обращение подробно...</p>
+            </div>
 
-        <div class="hint">
-            Подсказка: Опишите ситуацию максимально подробно для быстрого решения вопроса
+            <div id="successSection" style="display: none;">
+                <div class="checkbox-item">
+                    <input type="checkbox" checked disabled>
+                    <span>Обращение отправлено! Закройте окно.</span>
+                </div>
+
+                <hr>
+
+                <div class="id-section">
+                    <p>Ваш анонимный ID: <strong id="anonId">STU-SBXR65</strong></p>
+                </div>
+
+                <button class="send-btn" disabled>Отправлено</button>
+            </div>
+
+            <div id="sendSection">
+                <button class="send-btn" onclick="sendAppeal()">Отправить обращение</button>
+            </div>
+
+            <div class="hint">
+                Подсказка: Опишите ситуацию максимально подробно для быстрого решения вопроса
+            </div>
+            
+            <button class="btn" onclick="backToMain()" style="background: #6c757d; margin-top: 15px;">← Назад</button>
         </div>
     </div>
 
@@ -173,13 +226,20 @@
 
         function getCurrentTime() {
             const now = new Date();
-            return now.toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
+            return now.toLocaleTimeString('ru-RU', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
+        }
+
+        function openAppInterface() {
+            document.getElementById('mainInterface').style.display = 'none';
+            document.getElementById('appealInterface').style.display = 'block';
+        }
+
+        function backToMain() {
+            document.getElementById('mainInterface').style.display = 'block';
+            document.getElementById('appealInterface').style.display = 'none';
         }
 
         function sendAppeal() {
@@ -191,7 +251,6 @@
 
             const tg = Telegram.WebApp;
             const anonId = generateAnonId();
-            const currentTime = getCurrentTime();
 
             // Показываем секцию успеха
             document.getElementById('successSection').style.display = 'block';
@@ -204,7 +263,7 @@
                 anonymous_id: anonId,
                 type: '7 Вопрос',
                 text: 'фьюрфильтры',
-                time: currentTime
+                time: new Date().toLocaleString('ru-RU')
             };
 
             tg.sendData(JSON.stringify(data));
@@ -214,20 +273,13 @@
         }
 
         function initApp() {
-            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const isTelegram = window.Telegram && Telegram.WebApp;
-
-            if (isMobile && isTelegram) {
-                // Мобильное устройство + Telegram WebApp
-                document.getElementById('desktopMessage').style.display = 'none';
-                document.getElementById('mobileApp').style.display = 'block';
-                
+            // Обновляем время
+            document.getElementById('currentTime').textContent = getCurrentTime();
+            
+            // Инициализируем Telegram WebApp если мы в нем
+            if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-            } else {
-                // ПК или не Telegram
-                document.getElementById('desktopMessage').style.display = 'block';
-                document.getElementById('mobileApp').style.display = 'none';
             }
         }
 
