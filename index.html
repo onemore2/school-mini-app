@@ -1,290 +1,318 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MR.PRIZIDENT</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: white;
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 100%;
-            background: white;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        
-        .btn {
-            background: #0088cc;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px 0;
-            width: 100%;
-        }
-        
-        .message {
-            margin: 15px 0;
-            padding: 10px;
-            text-align: center;
-        }
-        
-        .timestamp {
-            color: #666;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        /* Стили для интерфейса обращения */
-        .appeal-interface {
-            display: none;
-            margin-top: 20px;
-        }
-        
-        h2 {
-            color: #2c3e50;
-            margin: 15px 0 10px 0;
-            font-size: 18px;
-        }
-        
-        h3 {
-            color: #2c3e50;
-            margin: 12px 0 8px 0;
-            font-size: 16px;
-        }
-        
-        .problem-section {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #0088cc;
-        }
-        
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            padding: 8px;
-            background: #e8f5e8;
-            border-radius: 6px;
-            border-left: 4px solid #28a745;
-        }
-        
-        .id-section {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 6px;
-            margin: 10px 0;
-            text-align: center;
-            border-left: 4px solid #2196f3;
-        }
-        
-        .send-btn {
-            background: #0088cc;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 15px 0;
-            width: 100%;
-            font-weight: bold;
-        }
-        
-        .send-btn:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-        
-        .hint {
-            background: #fff3cd;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 15px;
-            border-left: 4px solid #ffc107;
-            font-size: 14px;
-            color: #856404;
-        }
-        
-        hr {
-            margin: 20px 0;
-            border: none;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        /* Адаптация для ПК */
-        @media (min-width: 768px) {
-            body {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 40px 20px;
-            }
-            
-            .container {
-                background: white;
-                border-radius: 12px;
-                padding: 30px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                max-width: 500px;
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>Школьный Чат</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      padding: 15px;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px 0;
+    }
+    
+    .header h1 {
+      font-size: 22px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    
+    .category-buttons {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .category-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    
+    .category-btn.active {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .category-btn:active {
+      transform: scale(0.98);
+    }
+    
+    textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      color: white;
+      font-size: 15px;
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+      margin: 15px 0;
+    }
+    
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .send-btn {
+      width: 100%;
+      background: #4CAF50;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+    
+    .send-btn:active {
+      transform: scale(0.98);
+      background: #45a049;
+    }
+    
+    .send-btn:disabled {
+      background: rgba(255, 255, 255, 0.2);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .status {
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+    
+    .status.success {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+    
+    .status.error {
+      background: rgba(244, 67, 54, 0.2);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+    
+    .status.info {
+      background: rgba(33, 150, 243, 0.2);
+      border: 1px solid rgba(33, 150, 243, 0.3);
+    }
+    
+    .anonymous-id {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .instructions {
+      font-size: 13px;
+      opacity: 0.8;
+      line-height: 1.4;
+      margin-top: 15px;
+      text-align: center;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Первый интерфейс (главный) -->
-        <div id="mainInterface">
-            <h1>MR.PRIZIDENT</h1>
-            
-            <div class="message">
-                Нажмите кнопку ниже для открытия удобного интерфейса:
-            </div>
-
-            <button class="btn" onclick="openAppInterface()">Открыть мини-приложение</button>
-
-            <div class="message">
-                Вы успешно передали данные боту кнопкой «Открыть мини-приложение».
-            </div>
-
-            <div class="timestamp" id="currentTime"></div>
-        </div>
-
-        <!-- Второй интерфейс (обращение) -->
-        <div id="appealInterface" class="appeal-interface">
-            <h1>MR.PRIZIDENT</h1>
-            
-            <h2>Вопрос</h2>
-            
-            <div class="problem-section">
-                <h3>Проблема</h3>
-                <p>Опишите ваше обращение подробно...</p>
-            </div>
-
-            <div id="successSection" style="display: none;">
-                <div class="checkbox-item">
-                    <input type="checkbox" checked disabled>
-                    <span>Обращение отправлено! Закройте окно.</span>
-                </div>
-
-                <hr>
-
-                <div class="id-section">
-                    <p>Ваш анонимный ID: <strong id="anonId">STU-SBXR65</strong></p>
-                </div>
-
-                <button class="send-btn" disabled>Отправлено</button>
-            </div>
-
-            <div id="sendSection">
-                <button class="send-btn" onclick="sendAppeal()">Отправить обращение</button>
-            </div>
-
-            <div class="hint">
-                Подсказка: Опишите ситуацию максимально подробно для быстрого решения вопроса
-            </div>
-            
-            <button class="btn" onclick="backToMain()" style="background: #6c757d; margin-top: 15px;">← Назад</button>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>📨 Школьный Чат</h1>
+      <p>Анонимные обращения</p>
     </div>
+    
+    <div class="card">
+      <div class="category-buttons">
+        <button class="category-btn active" data-category="idea">💡 Идея</button>
+        <button class="category-btn" data-category="question">❓ Вопрос</button>
+        <button class="category-btn" data-category="complaint">⚠️ Проблема</button>
+      </div>
+      
+      <textarea 
+        id="text" 
+        placeholder="Опишите ваше обращение..." 
+        rows="4"
+      ></textarea>
+      
+      <div id="status"></div>
+      
+      <div class="anonymous-id">
+        Ваш ID: <span id="anonymousId">...</span>
+      </div>
+      
+      <button id="send" class="send-btn">✅ Отправить</button>
+      
+      <div class="instructions">
+        💡 Опишите ситуацию подробно для быстрого решения
+      </div>
+    </div>
+  </div>
 
-    <script>
-        function generateAnonId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'STU-';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        function getCurrentTime() {
-            const now = new Date();
-            return now.toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function openAppInterface() {
-            document.getElementById('mainInterface').style.display = 'none';
-            document.getElementById('appealInterface').style.display = 'block';
-        }
-
-        function backToMain() {
-            document.getElementById('mainInterface').style.display = 'block';
-            document.getElementById('appealInterface').style.display = 'none';
-        }
-
-        function sendAppeal() {
-            // Проверяем, что мы в Telegram WebApp
-            if (!window.Telegram || !Telegram.WebApp) {
-                alert('Откройте приложение в мобильном Telegram');
-                return;
-            }
-
-            const tg = Telegram.WebApp;
-            const anonId = generateAnonId();
-
-            // Показываем секцию успеха
-            document.getElementById('successSection').style.display = 'block';
-            document.getElementById('sendSection').style.display = 'none';
-            document.getElementById('anonId').textContent = anonId;
-
-            // Отправляем данные в бота
-            const data = {
-                action: 'new_appeal',
-                anonymous_id: anonId,
-                type: '7 Вопрос',
-                text: 'фьюрфильтры',
-                time: new Date().toLocaleString('ru-RU')
-            };
-
-            tg.sendData(JSON.stringify(data));
-            
-            // Разворачиваем WebApp на весь экран
-            tg.expand();
-        }
-
-        function initApp() {
-            // Обновляем время
-            document.getElementById('currentTime').textContent = getCurrentTime();
-            
-            // Инициализируем Telegram WebApp если мы в нем
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.ready();
-                Telegram.WebApp.expand();
-            }
-        }
-
-        // Запускаем при загрузке
-        document.addEventListener('DOMContentLoaded', initApp);
-    </script>
+  <script>
+    // Telegram WebApp
+    let tg = window.Telegram.WebApp;
+    
+    // Инициализация для мобильных
+    tg.expand();
+    tg.enableClosingConfirmation();
+    
+    // Переменные
+    let category = 'idea';
+    let anonymousId = '';
+    
+    // Генерация ID
+    function generateAnonymousId() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const numbers = '0123456789';
+      
+      let letterPart = '';
+      for (let i = 0; i < 4; i++) {
+        letterPart += letters.charAt(Math.floor(Math.random() * letters.length));
+      }
+      
+      let numberPart = '';
+      for (let i = 0; i < 2; i++) {
+        numberPart += numbers.charAt(Math.floor(Math.random() * numbers.length));
+      }
+      
+      return `STU-${letterPart}${numberPart}`;
+    }
+    
+    // Инициализация ID
+    function initAnonymousId() {
+      anonymousId = generateAnonymousId();
+      document.getElementById('anonymousId').textContent = anonymousId;
+    }
+    
+    // Обработчики категорий
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        category = btn.getAttribute('data-category');
+      });
+    });
+    
+    // Отправка данных
+    document.getElementById('send').addEventListener('click', function() {
+      const text = document.getElementById('text').value.trim();
+      const statusDiv = document.getElementById('status');
+      
+      if (!text) {
+        statusDiv.innerHTML = '<div class="status error">❌ Введите текст</div>';
+        return;
+      }
+      
+      if (text.length < 3) {
+        statusDiv.innerHTML = '<div class="status error">❌ Текст слишком короткий</div>';
+        return;
+      }
+      
+      const sendBtn = document.getElementById('send');
+      sendBtn.disabled = true;
+      sendBtn.textContent = '⏳ Отправка...';
+      
+      statusDiv.innerHTML = '<div class="status info">📤 Отправка...</div>';
+      
+      // Подготовка данных
+      const data = {
+        action: 'submit_feedback',
+        anonymous_id: anonymousId,
+        type: category,
+        text: text,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('Отправка данных:', data);
+      
+      try {
+        // Отправка в бота
+        tg.sendData(JSON.stringify(data));
+        
+        // Успешная отправка
+        setTimeout(() => {
+          statusDiv.innerHTML = '<div class="status success">✅ Отправлено!</div>';
+          sendBtn.textContent = '✅ Отправлено';
+          
+          // Очистка и новый ID
+          document.getElementById('text').value = '';
+          initAnonymousId();
+          
+          // Автозакрытие через 2 секунды
+          setTimeout(() => {
+            tg.close();
+          }, 2000);
+          
+        }, 1000);
+        
+      } catch (error) {
+        console.error('Ошибка отправки:', error);
+        statusDiv.innerHTML = '<div class="status error">❌ Ошибка отправки</div>';
+        sendBtn.disabled = false;
+        sendBtn.textContent = '✅ Отправить';
+      }
+    });
+    
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      initAnonymousId();
+      document.getElementById('text').focus();
+    });
+  </script>
 </body>
 </html>
