@@ -1,355 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      color: white;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       min-height: 100vh;
       padding: 20px;
     }
-    
-    .container {
-      max-width: 100%;
-      margin: 0 auto;
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px 0;
-    }
-    
-    .header h1 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .header p {
-      opacity: 0.9;
-      font-size: 14px;
-    }
-    
+    .container { max-width: 100%; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 20px; }
+    .header h1 { font-size: 22px; margin-bottom: 6px; }
     .card {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 25px;
+      border-radius: 16px;
+      padding: 20px;
       margin-bottom: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255,255,255,0.2);
     }
-    
-    .category-buttons {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-    
     .category-btn {
-      background: rgba(255, 255, 255, 0.15);
+      display: block;
+      width: 100%;
+      background: rgba(255,255,255,0.15);
       border: 2px solid transparent;
-      border-radius: 15px;
-      padding: 18px;
+      border-radius: 12px;
+      padding: 14px;
       color: white;
       font-size: 16px;
-      font-weight: 500;
+      margin-bottom: 10px;
       cursor: pointer;
-      transition: all 0.3s ease;
       text-align: left;
-      backdrop-filter: blur(10px);
     }
-    
-    .category-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
-    
     .category-btn.active {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.5);
     }
-    
-    .textarea-container {
-      margin: 25px 0;
-    }
-    
     textarea {
       width: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 18px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 14px;
       color: white;
       font-size: 16px;
+      min-height: 120px;
+      margin: 15px 0;
       resize: vertical;
-      min-height: 140px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
     }
-    
-    textarea::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
-    
-    textarea:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    }
-    
     .send-btn {
       width: 100%;
       background: linear-gradient(135deg, #4CAF50, #45a049);
-      border: none;
-      border-radius: 15px;
-      padding: 20px;
       color: white;
-      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 17px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 10px;
-      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
     }
-    
-    .send-btn:hover:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
-    }
-    
-    .send-btn:active {
-      transform: translateY(-1px);
-    }
-    
-    .send-btn:disabled {
-      background: rgba(255, 255, 255, 0.2);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    
     .anonymous-id {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 12px;
+      background: rgba(0,0,0,0.15);
+      padding: 12px;
+      border-radius: 10px;
       text-align: center;
-      margin: 20px 0;
-      font-family: 'Courier New', monospace;
+      font-family: monospace;
+      margin: 15px 0;
       font-size: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    
-    .instructions {
-      font-size: 14px;
-      opacity: 0.8;
-      line-height: 1.5;
-      margin-top: 15px;
-    }
-    
-    .category-icon {
-      margin-right: 10px;
-      font-size: 18px;
-    }
-    
-    .mobile-only-message {
+    .mobile-only {
       display: none;
       text-align: center;
       padding: 40px 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      margin: 20px 0;
-      backdrop-filter: blur(10px);
-    }
-    
-    @media (max-width: 480px) {
-      body {
-        padding: 15px;
-      }
-      .card {
-        padding: 20px;
-      }
-      .category-btn {
-        padding: 15px;
-        font-size: 14px;
-      }
-      textarea {
-        padding: 15px;
-        font-size: 14px;
-      }
-      .send-btn {
-        padding: 18px;
-        font-size: 16px;
-      }
+      color: white;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="mobile-only-message" id="mobileMessage">
-      <h2>📱 Мобильное приложение</h2>
-      <p>Это мини-приложение доступно только в мобильной версии Telegram</p>
-      <p><strong>Откройте Telegram на смартфоне</strong></p>
+  <div class="mobile-only" id="mobileOnly">
+    <h2>📱 Только в Telegram на телефоне</h2>
+    <p>Откройте это мини-приложение в мобильном Telegram.</p>
+  </div>
+
+  <div id="app" style="display:none;">
+    <div class="header">
+      <h1>📨 Школьный Чат</h1>
+      <p>Анонимные обращения</p>
     </div>
-    
-    <div id="appInterface" style="display: none;">
-      <div class="header">
-        <h1>📨 Школьный Чат</h1>
-        <p>Анонимные обращения и предложения</p>
-      </div>
-      
-      <div class="card">
-        <div class="category-buttons">
-          <button class="category-btn active" data-category="idea">
-            <span class="category-icon">💡</span>Идея
-          </button>
-          <button class="category-btn" data-category="question">
-            <span class="category-icon">❓</span>Вопрос
-          </button>
-          <button class="category-btn" data-category="complaint">
-            <span class="category-icon">⚠️</span>Проблема
-          </button>
-        </div>
-        
-        <div class="textarea-container">
-          <textarea 
-            id="text" 
-            placeholder="Опишите вашу идею по улучшению школы..." 
-            rows="6"
-          ></textarea>
-        </div>
-        
-        <div class="anonymous-id" id="anonymousIdContainer">
-          Ваш анонимный номер: <span id="anonymousId">...</span>
-        </div>
-        
-        <button id="send" class="send-btn">
-          ✅ Отправить обращение
-        </button>
-        
-        <div class="instructions">
-          💡 <strong>Совет:</strong> Опишите ситуацию максимально подробно. 
-          Это поможет быстрее решить ваш вопрос!
-        </div>
-      </div>
+    <div class="card">
+      <button class="category-btn active" data-cat="idea">💡 Идея</button>
+      <button class="category-btn" data-cat="question">❓ Вопрос</button>
+      <button class="category-btn" data-cat="complaint">⚠️ Проблема</button>
+
+      <textarea id="text" placeholder="Опишите подробно..."></textarea>
+      <div class="anonymous-id">Ваш номер: <span id="aid">...</span></div>
+      <button class="send-btn" id="send">✅ Отправить</button>
     </div>
   </div>
 
   <script>
-    function isTelegramWebApp() {
-      return window.Telegram && window.Telegram.WebApp;
+    // Генерация анонимного ID
+    function genID() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let id = 'STU-';
+      for (let i = 0; i < 6; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
+      return id;
     }
-    
-    function isMobileDevice() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    const isTg = window.Telegram && window.Telegram.WebApp;
+    const mobileOnly = document.getElementById('mobileOnly');
+    const app = document.getElementById('app');
+
+    if (isTg) {
+      mobileOnly.style.display = 'none';
+      app.style.display = 'block';
+      init();
+    } else {
+      mobileOnly.style.display = 'block';
+      app.style.display = 'none';
     }
-    
-    function initApp() {
-      const mobileMessage = document.getElementById('mobileMessage');
-      const appInterface = document.getElementById('appInterface');
-      
-      if (isTelegramWebApp()) {
-        mobileMessage.style.display = 'none';
-        appInterface.style.display = 'block';
-        initTelegramApp();
-      } else {
-        mobileMessage.style.display = 'block';
-        appInterface.style.display = 'none';
-      }
-    }
-    
-    function initTelegramApp() {
+
+    function init() {
       const tg = window.Telegram.WebApp;
       tg.expand();
       tg.enableClosingConfirmation();
-      tg.setHeaderColor('#667eea');
-      tg.setBackgroundColor('#667eea');
-      
-      let category = 'idea';
-      let anonymousId = '';
-      
-      function generateAnonymousId() {
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const numbers = '0123456789';
-        let letterPart = '';
-        for (let i = 0; i < 4; i++) {
-          letterPart += letters.charAt(Math.floor(Math.random() * letters.length));
-        }
-        let numberPart = '';
-        for (let i = 0; i < 2; i++) {
-          numberPart += numbers.charAt(Math.floor(Math.random() * numbers.length));
-        }
-        return `STU-${letterPart}${numberPart}`;
-      }
-      
-      anonymousId = generateAnonymousId();
-      document.getElementById('anonymousId').textContent = anonymousId;
-      
-      // Обработчики категорий
+
+      let cat = 'idea';
+      const aid = genID();
+      document.getElementById('aid').textContent = aid;
+
       document.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          category = btn.getAttribute('data-category');
-          
-          const placeholders = {
-            'idea': 'Опишите вашу идею по улучшению школы...',
-            'question': 'Задайте ваш вопрос подробно...',
-            'complaint': 'Опишите проблему, с которой столкнулись...'
-          };
-          document.getElementById('text').placeholder = placeholders[category];
+          cat = btn.dataset.cat;
         });
       });
-      
-      // === КРИТИЧЕСКИ ВАЖНО: синхронная отправка ===
+
       document.getElementById('send').addEventListener('click', () => {
         const text = document.getElementById('text').value.trim();
-        
-        // Валидация
-        if (!text) {
-          tg.showAlert('Пожалуйста, введите текст обращения');
+        if (!text || text.length < 10) {
+          tg.showAlert('Минимум 10 символов');
           return;
         }
-        if (text.length < 10) {
-          tg.showAlert('Текст слишком короткий. Минимум 10 символов.');
-          return;
-        }
-        
-        // Подготавливаем данные
+
         const data = {
           action: 'submit_feedback',
-          anonymous_id: anonymousId,
-          type: category,
+          anonymous_id: aid,
+          type: cat,
           text: text,
           timestamp: new Date().toISOString()
         };
-        
-        // === ОТПРАВКА — СТРОГО СИНХРОННО, БЕЗ ЗАДЕРЖЕК ===
+
+        // 🔥 Отправка — СТРОГО СИНХРОННО, без setTimeout
         tg.sendData(JSON.stringify(data));
-        
-        // Закрываем мгновенно
         tg.close();
       });
-      
-      // Фокус на поле
-      document.getElementById('text').focus();
     }
-    
-    initApp();
   </script>
 </body>
 </html>
