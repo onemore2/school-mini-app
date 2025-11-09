@@ -8,120 +8,106 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background: white;
-            text-align: center;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
+        
+        .mobile-only {
+            display: none;
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .desktop-message {
+            padding: 50px 20px;
+            text-align: center;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .app-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
         .btn {
             background: #0088cc;
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
+            padding: 15px 30px;
+            border-radius: 25px;
             font-size: 16px;
-            margin: 10px;
             cursor: pointer;
-        }
-        hr {
-            margin: 20px 0;
-            border: none;
-            border-top: 1px solid #ccc;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <h1>MR.PRIZIDENT</h1>
+    <div id="desktopMessage" class="desktop-message">
+        <h2>📱 Мобильное приложение</h2>
+        <p>Это мини-приложение доступно только в мобильной версии Telegram</p>
+        <p><strong>Инструкция:</strong></p>
+        <ol style="text-align: left; max-width: 300px; margin: 20px auto;">
+            <li>Откройте Telegram на смартфоне</li>
+            <li>Перейдите в бот @MrPrizidentBot</li>
+            <li>Нажмите кнопку "Открыть мини-приложение"</li>
+        </ol>
+    </div>
     
-    <p>Нажмите кнопку ниже для открытия удобного интерфейса:</p>
-
-    <button class="btn" onclick="sendAppeal()">Открыть мини-приложение</button>
-
-    <p>Вы успешно передали данные боту кнопкой «Открыть мини-приложение».</p>
-
-    <hr>
-
-    <!-- Этот блок показывается после отправки -->
-    <div id="appealBlock" style="display: none;">
-        <h2>НОВОЕ ОБРАЩЕНИЕ ИЗ WEBAPP</h2>
-        <p>Анонимный ID: <span id="anonId">STU-7Q9H</span></p>
-        <p>Тип: 7 Вопрос</p>
-        <p>Время: <span id="appealTime">05.11.2025, 18:12</span></p>
-        <p>Текст: фьюрфильтры</p>
-
-        <hr>
-
-        <h3>ОБРАЩЕНИЕ УСПЕШНО ОТПРАВЛЕНО!</h3>
-        <p>- Ваш анонимный номер: <span id="successAnonId">STU-7Q9H</span></p>
-        <p>- Тип: 7 Вопрос</p>
-        <p>- Время: <span id="successTime">05.11.2025, 18:12</span></p>
-
-        <p>Спасибо за ваше обращение!</p>
+    <div id="mobileApp" class="mobile-only">
+        <div class="app-container">
+            <h2>MR.PRIZIDENT</h2>
+            <!-- Ваш основной контент приложения здесь -->
+            <button class="btn" onclick="sendData()">Отправить обращение</button>
+        </div>
     </div>
 
     <script>
-        function generateAnonId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'STU-';
-            for (let i = 0; i < 4; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
-
-        function getCurrentTime() {
-            const now = new Date();
-            return now.toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function sendAppeal() {
-            if (!window.Telegram || !Telegram.WebApp) {
-                alert('Откройте в Telegram на смартфоне');
-                return;
-            }
-
-            const tg = Telegram.WebApp;
-            const anonId = generateAnonId();
-            const currentTime = getCurrentTime();
-
-            // Обновляем данные
-            document.getElementById('anonId').textContent = anonId;
-            document.getElementById('appealTime').textContent = currentTime;
-            document.getElementById('successAnonId').textContent = anonId;
-            document.getElementById('successTime').textContent = currentTime;
-
-            // Показываем блок с обращением
-            document.getElementById('appealBlock').style.display = 'block';
-
-            // Отправляем данные в бота
-            const data = {
-                action: 'new_appeal',
-                anonymous_id: anonId,
-                type: '7 Вопрос',
-                text: 'фьюрфильтры',
-                time: currentTime
-            };
-
-            tg.sendData(JSON.stringify(data));
+        
+        function initApp() {
+            const desktopMsg = document.getElementById('desktopMessage');
+            const mobileApp = document.getElementById('mobileApp');
             
-            // Прокручиваем к результату
-            document.getElementById('appealBlock').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function init() {
-            if (window.Telegram && Telegram.WebApp) {
+            if (isMobileDevice() && window.Telegram && Telegram.WebApp) {
+                // Мобильное устройство + Telegram WebApp
+                desktopMsg.style.display = 'none';
+                mobileApp.style.display = 'block';
+                
+                // Инициализация Telegram WebApp
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
+                
+            } else {
+                // ПК или не Telegram среда
+                desktopMsg.style.display = 'flex';
+                mobileApp.style.display = 'none';
             }
         }
-
-        document.addEventListener('DOMContentLoaded', init);
+        
+        function sendData() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'new_appeal',
+                    text: 'Текст обращения',
+                    type: '7 Вопрос'
+                }));
+            }
+        }
+        
+        // Запуск при загрузке
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
