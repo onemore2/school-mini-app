@@ -6,50 +6,48 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
     
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       min-height: 100vh;
       padding: 20px;
-      line-height: 1.6;
     }
     
     .container {
       max-width: 100%;
+      margin: 0 auto;
     }
     
     .header {
       text-align: center;
       margin-bottom: 30px;
-      padding: 25px 0;
+      padding: 20px 0;
     }
     
     .header h1 {
-      font-size: 26px;
+      font-size: 24px;
       margin-bottom: 8px;
-      font-weight: 600;
       text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     
     .header p {
       opacity: 0.9;
-      font-size: 15px;
-      font-weight: 300;
+      font-size: 14px;
     }
     
     .card {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
       border-radius: 20px;
-      padding: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     .category-buttons {
@@ -61,36 +59,27 @@
     .category-btn {
       background: rgba(255, 255, 255, 0.15);
       border: 2px solid transparent;
-      border-radius: 16px;
-      padding: 18px 20px;
+      border-radius: 15px;
+      padding: 18px;
       color: white;
       font-size: 16px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s ease;
       text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      backdrop-filter: blur(10px);
     }
     
     .category-btn:hover {
-      background: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
     
     .category-btn.active {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    }
-    
-    .category-icon {
-      font-size: 20px;
-      width: 24px;
-      text-align: center;
     }
     
     .textarea-container {
@@ -101,18 +90,18 @@
       width: 100%;
       background: rgba(255, 255, 255, 0.1);
       border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
+      border-radius: 15px;
       padding: 18px;
       color: white;
       font-size: 16px;
       resize: vertical;
-      min-height: 130px;
-      font-family: inherit;
+      min-height: 140px;
+      backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
     
     textarea::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(255, 255, 255, 0.7);
     }
     
     textarea:focus {
@@ -126,19 +115,15 @@
       width: 100%;
       background: linear-gradient(135deg, #4CAF50, #45a049);
       border: none;
-      border-radius: 16px;
+      border-radius: 15px;
       padding: 20px;
       color: white;
       font-size: 18px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s ease;
       margin-top: 10px;
       box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
     
     .send-btn:hover:not(:disabled) {
@@ -151,7 +136,7 @@
     }
     
     .send-btn:disabled {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
@@ -159,50 +144,49 @@
     
     .status {
       text-align: center;
-      padding: 18px;
-      border-radius: 16px;
+      padding: 15px;
+      border-radius: 15px;
       margin: 20px 0;
       font-weight: 500;
       transition: all 0.3s ease;
-      font-size: 15px;
     }
     
     .status.success {
-      background: rgba(76, 175, 80, 0.25);
-      border: 1px solid rgba(76, 175, 80, 0.4);
+      background: rgba(76, 175, 80, 0.3);
+      border: 1px solid rgba(76, 175, 80, 0.5);
     }
     
     .status.error {
-      background: rgba(244, 67, 54, 0.25);
-      border: 1px solid rgba(244, 67, 54, 0.4);
+      background: rgba(244, 67, 54, 0.3);
+      border: 1px solid rgba(244, 67, 54, 0.5);
     }
     
     .status.info {
-      background: rgba(33, 150, 243, 0.25);
-      border: 1px solid rgba(33, 150, 243, 0.4);
+      background: rgba(33, 150, 243, 0.3);
+      border: 1px solid rgba(33, 150, 243, 0.5);
     }
     
     .anonymous-id {
       background: rgba(255, 255, 255, 0.1);
-      padding: 16px;
+      padding: 15px;
       border-radius: 12px;
       text-align: center;
       margin: 20px 0;
       font-family: 'Courier New', monospace;
-      font-size: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      font-weight: 500;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     .instructions {
       font-size: 14px;
-      opacity: 0.85;
+      opacity: 0.8;
       line-height: 1.5;
-      margin-top: 20px;
-      text-align: center;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
+      margin-top: 15px;
+    }
+    
+    .category-icon {
+      margin-right: 10px;
+      font-size: 18px;
     }
     
     @media (max-width: 480px) {
@@ -211,22 +195,22 @@
       }
       
       .card {
-        padding: 22px;
+        padding: 20px;
       }
       
       .category-btn {
-        padding: 16px 18px;
-        font-size: 15px;
+        padding: 15px;
+        font-size: 14px;
       }
       
       textarea {
-        padding: 16px;
-        font-size: 15px;
+        padding: 15px;
+        font-size: 14px;
       }
       
       .send-btn {
         padding: 18px;
-        font-size: 17px;
+        font-size: 16px;
       }
     }
   </style>
@@ -254,42 +238,43 @@
       <div class="textarea-container">
         <textarea 
           id="text" 
-          placeholder="Опишите ваше обращение подробно..." 
-          rows="5"
+          placeholder="Опишите вашу идею, вопрос или проблему подробно..." 
+          rows="6"
         ></textarea>
       </div>
       
       <div id="status"></div>
       
-      <div class="anonymous-id">
-        🔐 Ваш анонимный ID: <span id="anonymousId">...</span>
+      <div class="anonymous-id" id="anonymousIdContainer">
+        Ваш анонимный номер: <span id="anonymousId">...</span>
       </div>
       
       <button id="send" class="send-btn">
-        <span>✅</span> Отправить обращение
+        ✅ Отправить обращение
       </button>
       
       <div class="instructions">
-        💡 <strong>Подсказка:</strong> Опишите ситуацию максимально подробно для быстрого решения вопроса
+        💡 <strong>Совет:</strong> Опишите ситуацию максимально подробно. 
+        Это поможет быстрее решить ваш вопрос!
       </div>
     </div>
   </div>
 
   <script>
-    // Telegram WebApp
+    // Инициализация Telegram WebApp
     let tg = window.Telegram.WebApp;
     
-    // Инициализация
+    // Инициализация приложения
     tg.expand();
     tg.enableClosingConfirmation();
     tg.setHeaderColor('#667eea');
     tg.setBackgroundColor('#667eea');
     
-    // Переменные
+    // Переменные приложения
     let category = 'idea';
     let anonymousId = '';
     
-    // Генерация ID
+    // Генерация анонимного ID (похожего на серверный формат)
     function generateAnonymousId() {
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       const numbers = '0123456789';
@@ -307,7 +292,7 @@
       return `STU-${letterPart}${numberPart}`;
     }
     
-    // Инициализация ID
+    // Инициализация анонимного ID
     function initAnonymousId() {
       anonymousId = generateAnonymousId();
       document.getElementById('anonymousId').textContent = anonymousId;
@@ -316,11 +301,16 @@
     // Обработчики категорий
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        // Убираем активный класс у всех кнопок
+        document.querySelectorAll('.category-btn').forEach(b => {
+          b.classList.remove('active');
+        });
+        
+        // Добавляем активный класс к нажатой кнопке
         btn.classList.add('active');
         category = btn.getAttribute('data-category');
         
-        // Обновляем placeholder
+        // Обновляем placeholder в зависимости от категории
         const textarea = document.getElementById('text');
         const placeholders = {
           'idea': 'Опишите вашу идею по улучшению школы...',
@@ -335,24 +325,27 @@
     document.getElementById('send').addEventListener('click', () => {
       const text = document.getElementById('text').value.trim();
       const statusDiv = document.getElementById('status');
+      const sendBtn = document.getElementById('send');
       
+      // Валидация
       if (!text) {
         statusDiv.innerHTML = '<div class="status error">❌ Пожалуйста, введите текст обращения</div>';
         return;
       }
       
-      if (text.length < 5) {
-        statusDiv.innerHTML = '<div class="status error">❌ Текст слишком короткий. Опишите подробнее</div>';
+      if (text.length < 10) {
+        statusDiv.innerHTML = '<div class="status error">❌ Текст слишком короткий. Опишите подробнее (минимум 10 символов)</div>';
         return;
       }
       
-      const sendBtn = document.getElementById('send');
+      // Блокируем кнопку на время отправки
       sendBtn.disabled = true;
-      sendBtn.innerHTML = '<span>⏳</span> Отправка...';
+      sendBtn.textContent = '⏳ Отправка...';
       
+      // Показываем статус отправки
       statusDiv.innerHTML = '<div class="status info">📤 Отправка обращения...</div>';
       
-      // Подготовка данных
+      // Подготавливаем данные для отправки
       const data = {
         action: 'submit_feedback',
         anonymous_id: anonymousId,
@@ -361,38 +354,46 @@
         timestamp: new Date().toISOString()
       };
       
-      console.log('Отправка данных:', data);
-      
-      // Отправка в бота
+      // Отправка данных в бот
       tg.sendData(JSON.stringify(data));
       
-      // Успешная отправка
+      // Показываем успешное сообщение
       setTimeout(() => {
         statusDiv.innerHTML = '<div class="status success">✅ Обращение отправлено! Закройте окно.</div>';
-        sendBtn.innerHTML = '<span>✅</span> Отправлено';
+        sendBtn.textContent = '✅ Отправлено';
         
-        // Очистка и новый ID
-        document.getElementById('text').value = '';
-        initAnonymousId();
-        
+        // Автоматическое закрытие через 2 секунды
+        setTimeout(() => {
+          tg.close();
+        }, 2000);
       }, 1000);
     });
     
     // Обработка изменения текста
     document.getElementById('text').addEventListener('input', function() {
+      const sendBtn = document.getElementById('send');
       const statusDiv = document.getElementById('status');
+      
+      // Очищаем статус при изменении текста
       if (this.value.trim().length > 0) {
         statusDiv.innerHTML = '';
       }
     });
     
-    // Инициализация
+    // Обработка ошибок Telegram WebApp
+    tg.onEvent('viewportChanged', () => {
+      tg.expand();
+    });
+    
+    // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', () => {
       initAnonymousId();
+      
+      // Фокус на текстовое поле
       document.getElementById('text').focus();
     });
     
-    // Горячие клавиши
+    // Обработка нажатия Enter для отправки (Ctrl+Enter или Cmd+Enter)
     document.getElementById('text').addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         document.getElementById('send').click();
