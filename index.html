@@ -354,8 +354,6 @@
         timestamp: new Date().toISOString()
       };
       
-      console.log('Отправляемые данные:', data);
-      
       // Отправка данных в бот
       tg.sendData(JSON.stringify(data));
       
@@ -364,12 +362,10 @@
         statusDiv.innerHTML = '<div class="status success">✅ Обращение отправлено! Закройте окно.</div>';
         sendBtn.textContent = '✅ Отправлено';
         
-        // Очищаем текстовое поле
-        document.getElementById('text').value = '';
-        
-        // Генерируем новый ID для следующего обращения
-        initAnonymousId();
-        
+        // Автоматическое закрытие через 2 секунды
+        setTimeout(() => {
+          tg.close();
+        }, 2000);
       }, 1000);
     });
     
