@@ -10,96 +10,117 @@
             margin: 0;
             padding: 20px;
             font-family: Arial, sans-serif;
-            background: #f0f0f0;
+            background: white;
             text-align: center;
         }
         .btn {
             background: #0088cc;
             color: white;
             border: none;
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 12px 30px;
+            border-radius: 8px;
             font-size: 16px;
             margin: 10px;
             cursor: pointer;
         }
-        .message {
-            background: white;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
-            border-left: 4px solid #0088cc;
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <h2>MR.PRIZIDENT</h2>
-        <div class="message">
-            Нажмите кнопку для отправки обращения
-        </div>
-        <button class="btn" onclick="sendMessage()">📨 Отправить обращение</button>
-        <div id="status"></div>
-    </div>
+    <h1>MR.PRIZIDENT</h1>
+    
+    <p>Нажмите кнопку ниже для открытия удобного интерфейса:</p>
 
-    <div id="pcMessage" style="display: none;">
-        <h2>📱 Только для телефона</h2>
-        <p>Откройте в Telegram на смартфоне</p>
+    <button class="btn" onclick="sendAppeal()">Открыть мини-приложение</button>
+
+    <p>Вы успешно передали данные боту кнопкой «Открыть мини-приложение».</p>
+
+    <hr>
+
+    <!-- Этот блок показывается после отправки -->
+    <div id="appealBlock" style="display: none;">
+        <h2>НОВОЕ ОБРАЩЕНИЕ ИЗ WEBAPP</h2>
+        <p>Анонимный ID: <span id="anonId">STU-7Q9H</span></p>
+        <p>Тип: 7 Вопрос</p>
+        <p>Время: <span id="appealTime">05.11.2025, 18:12</span></p>
+        <p>Текст: фьюрфильтры</p>
+
+        <hr>
+
+        <h3>ОБРАЩЕНИЕ УСПЕШНО ОТПРАВЛЕНО!</h3>
+        <p>- Ваш анонимный номер: <span id="successAnonId">STU-7Q9H</span></p>
+        <p>- Тип: 7 Вопрос</p>
+        <p>- Время: <span id="successTime">05.11.2025, 18:12</span></p>
+
+        <p>Спасибо за ваше обращение!</p>
     </div>
 
     <script>
-        // Проверка на телефон и Telegram
-        function isMobileTelegram() {
-            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const isTelegram = window.Telegram && Telegram.WebApp;
-            return isMobile && isTelegram;
+        function generateAnonId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'STU-';
+            for (let i = 0; i < 4; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
         }
 
-        // Основная функция отправки
-        function sendMessage() {
-            if (!isMobileTelegram()) {
-                alert('Откройте в Telegram на телефоне');
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function sendAppeal() {
+            if (!window.Telegram || !Telegram.WebApp) {
+                alert('Откройте в Telegram на смартфоне');
                 return;
             }
 
             const tg = Telegram.WebApp;
-            
-            // Данные для отправки
-            const data = {
-                action: 'new_appeal',
-                type: '7 Вопрос',
-                text: 'фьюрфильтры',
-                timestamp: new Date().toLocaleString('ru-RU')
-            };
+            const anonId = generateAnonId();
+            const currentTime = getCurrentTime();
+
+            // Обновляем данные
+            document.getElementById('anonId').textContent = anonId;
+            document.getElementById('appealTime').textContent = currentTime;
+            document.getElementById('successAnonId').textContent = anonId;
+            document.getElementById('successTime').textContent = currentTime;
+
+            // Показываем блок с обращением
+            document.getElementById('appealBlock').style.display = 'block';
 
             // Отправляем данные в бота
+            const data = {
+                action: 'new_appeal',
+                anonymous_id: anonId,
+                type: '7 Вопрос',
+                text: 'фьюрфильтры',
+                time: currentTime
+            };
+
             tg.sendData(JSON.stringify(data));
             
-            // Показываем подтверждение
-            document.getElementById('status').innerHTML = `
-                <div class="message" style="background: #d4edda; border-color: #28a745;">
-                    <strong>✅ ОБРАЩЕНИЕ ОТПРАВЛЕНО!</strong><br>
-                    Текст: фьюрфильтры<br>
-                    Тип: 7 Вопрос<br>
-                    Время: ${data.timestamp}
-                </div>
-            `;
+            // Прокручиваем к результату
+            document.getElementById('appealBlock').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Инициализация
         function init() {
-            if (isMobileTelegram()) {
+            if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-                document.getElementById('pcMessage').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-            } else {
-                document.getElementById('pcMessage').style.display = 'block';
-                document.getElementById('app').style.display = 'none';
             }
         }
 
-        // Запускаем при загрузке
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
