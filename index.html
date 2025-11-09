@@ -8,106 +8,99 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .mobile-only {
-            display: none;
-            padding: 40px 20px;
-            text-align: center;
-            color: white;
-        }
-        
-        .desktop-message {
-            padding: 50px 20px;
-            text-align: center;
-            color: white;
-            background: rgba(0,0,0,0.7);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .app-container {
-            max-width: 400px;
-            margin: 0 auto;
             padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            text-align: center;
         }
-        
         .btn {
             background: #0088cc;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
+            padding: 15px 25px;
+            border-radius: 10px;
             font-size: 16px;
+            margin: 10px;
             cursor: pointer;
-            margin: 10px 0;
+        }
+        .message {
+            background: white;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #0088cc;
         }
     </style>
 </head>
 <body>
-    <div id="desktopMessage" class="desktop-message">
-        <h2>📱 Мобильное приложение</h2>
-        <p>Это мини-приложение доступно только в мобильной версии Telegram</p>
-        <p><strong>Инструкция:</strong></p>
-        <ol style="text-align: left; max-width: 300px; margin: 20px auto;">
-            <li>Откройте Telegram на смартфоне</li>
-            <li>Перейдите в бот @MrPrizidentBot</li>
-            <li>Нажмите кнопку "Открыть мини-приложение"</li>
-        </ol>
-    </div>
-    
-    <div id="mobileApp" class="mobile-only">
-        <div class="app-container">
-            <h2>MR.PRIZIDENT</h2>
-            <!-- Ваш основной контент приложения здесь -->
-            <button class="btn" onclick="sendData()">Отправить обращение</button>
+    <div id="app">
+        <h2>MR.PRIZIDENT</h2>
+        <div class="message">
+            Нажмите кнопку для отправки обращения
         </div>
+        <button class="btn" onclick="sendMessage()">📨 Отправить обращение</button>
+        <div id="status"></div>
+    </div>
+
+    <div id="pcMessage" style="display: none;">
+        <h2>📱 Только для телефона</h2>
+        <p>Откройте в Telegram на смартфоне</p>
     </div>
 
     <script>
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // Проверка на телефон и Telegram
+        function isMobileTelegram() {
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const isTelegram = window.Telegram && Telegram.WebApp;
+            return isMobile && isTelegram;
         }
-        
-        function initApp() {
-            const desktopMsg = document.getElementById('desktopMessage');
-            const mobileApp = document.getElementById('mobileApp');
+
+        // Основная функция отправки
+        function sendMessage() {
+            if (!isMobileTelegram()) {
+                alert('Откройте в Telegram на телефоне');
+                return;
+            }
+
+            const tg = Telegram.WebApp;
             
-            if (isMobileDevice() && window.Telegram && Telegram.WebApp) {
-                // Мобильное устройство + Telegram WebApp
-                desktopMsg.style.display = 'none';
-                mobileApp.style.display = 'block';
-                
-                // Инициализация Telegram WebApp
+            // Данные для отправки
+            const data = {
+                action: 'new_appeal',
+                type: '7 Вопрос',
+                text: 'фьюрфильтры',
+                timestamp: new Date().toLocaleString('ru-RU')
+            };
+
+            // Отправляем данные в бота
+            tg.sendData(JSON.stringify(data));
+            
+            // Показываем подтверждение
+            document.getElementById('status').innerHTML = `
+                <div class="message" style="background: #d4edda; border-color: #28a745;">
+                    <strong>✅ ОБРАЩЕНИЕ ОТПРАВЛЕНО!</strong><br>
+                    Текст: фьюрфильтры<br>
+                    Тип: 7 Вопрос<br>
+                    Время: ${data.timestamp}
+                </div>
+            `;
+        }
+
+        // Инициализация
+        function init() {
+            if (isMobileTelegram()) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-                
+                document.getElementById('pcMessage').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
             } else {
-                // ПК или не Telegram среда
-                desktopMsg.style.display = 'flex';
-                mobileApp.style.display = 'none';
+                document.getElementById('pcMessage').style.display = 'block';
+                document.getElementById('app').style.display = 'none';
             }
         }
-        
-        function sendData() {
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'new_appeal',
-                    text: 'Текст обращения',
-                    type: '7 Вопрос'
-                }));
-            }
-        }
-        
-        // Запуск при загрузке
-        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Запускаем при загрузке
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
