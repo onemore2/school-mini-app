@@ -262,17 +262,61 @@
 
   <script>
     // Инициализация Telegram WebApp
-    let tg = window.Telegram.WebApp;
-    
-    // Инициализация приложения
+    const tg = window.Telegram.WebApp;
+    tg.ready();
     tg.expand();
     tg.enableClosingConfirmation();
     tg.setHeaderColor('#667eea');
     tg.setBackgroundColor('#667eea');
     
+    // Общие элементы
+    const textarea = document.getElementById('text');
+    const statusDiv = document.getElementById('status');
+    const sendBtn = document.getElementById('send');
+    
     // Переменные приложения
     let category = 'idea';
     let anonymousId = '';
+    const sendState = {
+      pending: false,
+      confirmTimeout: null,
+      failTimeout: null
+    };
+    
+    function setStatus(type, message) {
+      if (!message) {
+        statusDiv.innerHTML = '';
+        return;
+      }
+      statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+    }
+    
+    function resetSendButton() {
+      sendBtn.disabled = false;
+      sendBtn.textContent = '✅ Отправить обращение';
+    }
+    
+    function handleSendSuccess() {
+      if (!sendState.pending) return;
+      
+      sendState.pending = false;
+      if (sendState.confirmTimeout) clearTimeout(sendState.confirmTimeout);
+      if (sendState.failTimeout) clearTimeout(sendState.failTimeout);
+      sendState.confirmTimeout = null;
+      sendState.failTimeout = null;
+      
+      sendBtn.disabled = true;
+      sendBtn.textContent = '✅ Отправлено';
+      setStatus('success', '✅ Обращение отправлено! Можете закрыть мини-приложение.');
+      
+      if (tg.HapticFeedback) {
+        try {
+          tg.HapticFeedback.notificationOccurred('success');
+        } catch (e) {}
+      }
+      
+      setTimeout(() => tg.close(), 1800);
+    }
     
     // Генерация анонимного ID (похожего на серверный формат)
     function generateAnonymousId() {
@@ -299,10 +343,10 @@
     }
     
     // Обработчики категорий
-    document.querySelectorAll('.category-btn').forEach(btn => {
+    document.querySelectorAll('.category-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         // Убираем активный класс у всех кнопок
-        document.querySelectorAll('.category-btn').forEach(b => {
+        document.querySelectorAll('.category-btn').forEach((b) => {
           b.classList.remove('active');
         });
         
@@ -311,7 +355,6 @@
         category = btn.getAttribute('data-category');
         
         // Обновляем placeholder в зависимости от категории
-        const textarea = document.getElementById('text');
         const placeholders = {
           'idea': 'Опишите вашу идею по улучшению школы...',
           'question': 'Задайте ваш вопрос подробно...',
@@ -322,28 +365,29 @@
     });
     
     // Отправка данных
-    document.getElementById('send').addEventListener('click', () => {
-      const text = document.getElementById('text').value.trim();
-      const statusDiv = document.getElementById('status');
-      const sendBtn = document.getElementById('send');
+    sendBtn.addEventListener('click', () => {
+      if (sendState.pending) return;
+      
+      const text = textarea.value.trim();
       
       // Валидация
       if (!text) {
-        statusDiv.innerHTML = '<div class="status error">❌ Пожалуйста, введите текст обращения</div>';
+        setStatus('error', '❌ Пожалуйста, введите текст обращения');
         return;
       }
       
       if (text.length < 10) {
-        statusDiv.innerHTML = '<div class="status error">❌ Текст слишком короткий. Опишите подробнее (минимум 10 символов)</div>';
+        setStatus('error', '❌ Текст слишком короткий. Опишите подробнее (минимум 10 символов)');
         return;
       }
       
       // Блокируем кнопку на время отправки
+      sendState.pending = true;
       sendBtn.disabled = true;
       sendBtn.textContent = '⏳ Отправка...';
       
       // Показываем статус отправки
-      statusDiv.innerHTML = '<div class="status info">📤 Отправка обращения...</div>';
+      setStatus('info', '📤 Отправляем обращение...');
       
       // Подготавливаем данные для отправки
       const data = {
@@ -356,27 +400,32 @@
       
       // Отправка данных в бот
       tg.sendData(JSON.stringify(data));
+      if (tg.HapticFeedback) {
+        try {
+          tg.HapticFeedback.impactOccurred('light');
+        } catch (e) {}
+      }
       
-      // Показываем успешное сообщение
-      setTimeout(() => {
-        statusDiv.innerHTML = '<div class="status success">✅ Обращение отправлено! Закройте окно.</div>';
-        sendBtn.textContent = '✅ Отправлено';
-        
-        // Автоматическое закрытие через 2 секунды
-        setTimeout(() => {
-          tg.close();
-        }, 2000);
-      }, 1000);
+      sendState.confirmTimeout = setTimeout(() => {
+        if (sendState.pending) {
+          setStatus('info', '⌛ Ожидаем подтверждение от Telegram...');
+        }
+      }, 1200);
+      
+      sendState.failTimeout = setTimeout(() => {
+        if (sendState.pending) {
+          sendState.pending = false;
+          setStatus('error', '⚠️ Не удалось получить подтверждение. Проверьте интернет и попробуйте ещё раз.');
+          resetSendButton();
+        }
+      }, 7000);
     });
     
     // Обработка изменения текста
-    document.getElementById('text').addEventListener('input', function() {
-      const sendBtn = document.getElementById('send');
-      const statusDiv = document.getElementById('status');
-      
-      // Очищаем статус при изменении текста
-      if (this.value.trim().length > 0) {
-        statusDiv.innerHTML = '';
+    textarea.addEventListener('input', function() {
+      if (this.value.trim().length > 0 && !sendState.pending) {
+        setStatus(null, '');
+        resetSendButton();
       }
     });
     
@@ -385,18 +434,22 @@
       tg.expand();
     });
     
+    tg.onEvent('web_app_data_send', () => {
+      handleSendSuccess();
+    });
+    
     // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', () => {
       initAnonymousId();
       
       // Фокус на текстовое поле
-      document.getElementById('text').focus();
+      textarea.focus();
     });
     
     // Обработка нажатия Enter для отправки (Ctrl+Enter или Cmd+Enter)
-    document.getElementById('text').addEventListener('keydown', function(e) {
+    textarea.addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        document.getElementById('send').click();
+        sendBtn.click();
       }
     });
   </script>
