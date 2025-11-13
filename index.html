@@ -297,6 +297,20 @@
       sendBtn.textContent = '✅ Отправить обращение';
     }
     
+    function sendLog(level, args) {
+      try {
+        const payload = {
+          type: 'log',
+          level,
+          message: Array.from(args).join(' '),
+          timestamp: new Date().toISOString()
+        };
+        tg.sendData(JSON.stringify(payload));
+      } catch (e) {
+        console[level === 'error' ? 'error' : 'log']('webapp log failed', e);
+      }
+    }
+    
     function handleSendSuccess(message) {
       if (!sendState.pending) return;
       
@@ -424,6 +438,7 @@
       }, 1200);
       
       sendState.autoSuccessTimeout = setTimeout(() => {
+        sendLog('info', ['auto-success triggered']);
         handleSendSuccess();
       }, 2200);
       
