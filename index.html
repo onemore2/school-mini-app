@@ -1,27 +1,56 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background: #000;
+      color: white;
+      padding: 20px;
+      font-family: sans-serif;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background: #222;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      margin: 10px 0;
+      background: #222;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      resize: vertical;
+    }
+    #send {
+      background: green;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <h2>📨 Новое обращение</h2>
 
-  <div>
-    <strong>Категория:</strong><br>
-    <button id="idea">💡 Идея</button>
-    <button id="question">❓ Вопрос</button>
-    <button id="complaint">⚠️ Проблема</button>
-  </div>
+  <button id="idea">💡 Идея</button>
+  <button id="question">❓ Вопрос</button>
+  <button id="complaint">⚠️ Проблема</button>
 
-  <div>
-    <strong>Текст:</strong><br>
-    <textarea id="text" placeholder="Опишите подробно..."></textarea>
-  </div>
+  <textarea id="text" placeholder="Опишите подробно..."></textarea>
 
-  <button id="send" style="background: green; color: white;">✅ Отправить</button>
+  <button id="send">✅ Отправить</button>
 
   <script>
     let category = 'idea';
@@ -30,15 +59,14 @@
     document.getElementById('question').onclick = () => category = 'question';
     document.getElementById('complaint').onclick = () => category = 'complaint';
 
-    // Генерация анонимного ID
-    const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-
     document.getElementById('send').onclick = () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
-        alert('Введите текст обращения!');
+        alert('Введите текст!');
         return;
       }
+
+      const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
       const data = {
         action: 'submit',
@@ -50,6 +78,11 @@
       Telegram.WebApp.sendData(JSON.stringify(data));
       Telegram.WebApp.close();
     };
+
+    if (Telegram?.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
   </script>
 </body>
 </html>
