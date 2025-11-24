@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* стили остались как у вас */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       min-height: 100vh;
       padding: 20px;
     }
@@ -27,14 +23,9 @@
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 25px;
-      margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .category-buttons {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
+    .category-buttons { display: grid; gap: 12px; margin-bottom: 25px; }
     .category-btn {
       background: rgba(255, 255, 255, 0.15);
       border: 2px solid transparent;
@@ -48,14 +39,10 @@
       text-align: left;
       backdrop-filter: blur(10px);
     }
-    .category-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
+    .category-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
     .category-btn.active {
       background: rgba(255, 255, 255, 0.3);
       border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
     .textarea-container { margin: 25px 0; }
@@ -70,15 +57,12 @@
       resize: vertical;
       min-height: 140px;
       backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
     }
-    textarea::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
+    textarea::placeholder { color: rgba(255,255,255,0.7); }
     textarea:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.15);
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
     .send-btn {
@@ -91,19 +75,13 @@
       font-size: 18px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
       margin-top: 10px;
-      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+      box-shadow: 0 8px 25px rgba(76,175,80,0.3);
+      transition: all 0.3s ease;
     }
-    .send-btn:hover:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
-    }
-    .send-btn:active {
-      transform: translateY(-1px);
-    }
+    .send-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(76,175,80,0.4); }
     .send-btn:disabled {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255,255,255,0.2);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
@@ -114,29 +92,19 @@
       border-radius: 15px;
       margin: 20px 0;
       font-weight: 500;
-      transition: all 0.3s ease;
     }
-    .status.success {
-      background: rgba(76, 175, 80, 0.3);
-      border: 1px solid rgba(76, 175, 80, 0.5);
-    }
-    .status.error {
-      background: rgba(244, 67, 54, 0.3);
-      border: 1px solid rgba(244, 67, 54, 0.5);
-    }
-    .status.info {
-      background: rgba(33, 150, 243, 0.3);
-      border: 1px solid rgba(33, 150, 243, 0.5);
-    }
+    .status.success { background: rgba(76,175,80,0.3); border: 1px solid rgba(76,175,80,0.5); }
+    .status.error { background: rgba(244,67,54,0.3); border: 1px solid rgba(244,67,54,0.5); }
+    .status.info { background: rgba(33,150,243,0.3); border: 1px solid rgba(33,150,243,0.5); }
     .anonymous-id {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       padding: 15px;
       border-radius: 12px;
       text-align: center;
       margin: 20px 0;
       font-family: 'Courier New', monospace;
       font-size: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255,255,255,0.2);
     }
     .instructions {
       font-size: 14px;
@@ -144,60 +112,47 @@
       line-height: 1.5;
       margin-top: 15px;
     }
-    .category-icon {
-      margin-right: 10px;
-      font-size: 18px;
-    }
+    .category-icon { margin-right: 10px; font-size: 18px; }
     @media (max-width: 480px) {
       body { padding: 15px; }
       .card { padding: 20px; }
-      .category-btn { padding: 15px; font-size: 14px; }
-      textarea { padding: 15px; font-size: 14px; }
-      .send-btn { padding: 18px; font-size: 16px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>📨 Школьный Чат</h1>
+      <h1>Школьный Чат</h1>
       <p>Анонимные обращения и предложения</p>
     </div>
-    
+
     <div class="card">
       <div class="category-buttons">
         <button class="category-btn active" data-category="idea">
-          <span class="category-icon">💡</span>Идея
+          <span class="category-icon">Идея</span>Идея
         </button>
         <button class="category-btn" data-category="question">
-          <span class="category-icon">❓</span>Вопрос
+          <span class="category-icon">Вопрос</span>Вопрос
         </button>
         <button class="category-btn" data-category="complaint">
-          <span class="category-icon">⚠️</span>Проблема
+          <span class="category-icon">Проблема</span>Проблема
         </button>
       </div>
-      
+
       <div class="textarea-container">
-        <textarea 
-          id="text" 
-          placeholder="Опишите вашу идею, вопрос или проблему подробно..." 
-          rows="6"
-        ></textarea>
+        <textarea id="text" placeholder="Опишите вашу идею, вопрос или проблему подробно..." rows="6"></textarea>
       </div>
-      
+
       <div id="status"></div>
-      
-      <div class="anonymous-id" id="anonymousIdContainer">
+
+      <div class="anonymous-id">
         Ваш анонимный номер: <span id="anonymousId">...</span>
       </div>
-      
-      <button id="send" class="send-btn">
-        ✅ Отправить обращение
-      </button>
-      
+
+      <button id="send" class="send-btn">Отправить обращение</button>
+
       <div class="instructions">
-        💡 <strong>Совет:</strong> Опишите ситуацию максимально подробно. 
-        Это поможет быстрее решить ваш вопрос!
+        Совет: опишите всё максимально подробно — так быстрее помогут!
       </div>
     </div>
   </div>
@@ -207,173 +162,97 @@
     tg.ready();
     tg.expand();
     tg.enableClosingConfirmation();
-    tg.setHeaderColor('#667eea');
-    tg.setBackgroundColor('#667eea');
-    
+
     const textarea = document.getElementById('text');
     const statusDiv = document.getElementById('status');
     const sendBtn = document.getElementById('send');
-    
     let category = 'idea';
     let anonymousId = '';
-    const sendState = {
-      pending: false,
-      autoSuccessTimeout: null,
-      failTimeout: null,
-    };
-    
+
     function setStatus(type, message) {
-      if (!message) {
-        statusDiv.innerHTML = '';
-        return;
-      }
-      statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+      statusDiv.innerHTML = message ? `<div class="status ${type}">${message}</div>` : '';
     }
-    
-    function resetSendButton() {
-      sendBtn.disabled = false;
-      sendBtn.textContent = '✅ Отправить обращение';
-    }
-    
-    function handleSendSuccess(message) {
-      if (!sendState.pending) return;
-      sendState.pending = false;
-      clearTimeout(sendState.autoSuccessTimeout);
-      clearTimeout(sendState.failTimeout);
-      setStatus('success', message || '✅ Обращение отправлено! Можете закрыть мини-приложение.');
-      sendBtn.disabled = true;
-      sendBtn.textContent = '✅ Отправлено';
-      try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
-      try {
-        tg.showPopup({
-          title: 'Отправлено',
-          message: 'Обращение доставлено боту. Спасибо!',
-          buttons: [{type: 'ok'}]
-        });
-      } catch (e) {}
-      setTimeout(() => tg.close(), 1800);
-    }
-    
+
     function generateAnonymousId() {
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      let letterPart = '';
-      for (let i = 0; i < 4; i++) {
-        letterPart += letters.charAt(Math.floor(Math.random() * letters.length));
-      }
       const numbers = '0123456789';
-      let numberPart = '';
-      for (let i = 0; i < 2; i++) {
-        numberPart += numbers.charAt(Math.floor(Math.random() * numbers.length));
-      }
-      return `STU-${letterPart}${numberPart}`;
+      let result = 'STU-';
+      for (let i = 0; i < 4; i++) result += letters[Math.floor(Math.random() * letters.length)];
+      for (let i = 0; i < 2; i++) result += numbers[Math.floor(Math.random() * numbers.length)];
+      return result;
     }
-    
+
     function initAnonymousId() {
       anonymousId = generateAnonymousId();
       document.getElementById('anonymousId').textContent = anonymousId;
     }
-    
-    // Категории
-    document.querySelectorAll('.category-btn').forEach((btn) => {
+
+    // Переключение категорий
+    document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        category = btn.getAttribute('data-category');
+        category = btn.dataset.category;
         const placeholders = {
-          'idea': 'Опишите вашу идею по улучшению школы...',
-          'question': 'Задайте ваш вопрос подробно...',
-          'complaint': 'Опишите проблему, с которой столкнулись...'
+          idea: 'Опишите вашу идею по улучшению школы...',
+          question: 'Напишите ваш вопрос подробно...',
+          complaint: 'Опишите проблему, с которой вы столкнулись...'
         };
         textarea.placeholder = placeholders[category] || 'Опишите подробно...';
       });
     });
-    
+
+    // Главная кнопка отправки
     sendBtn.addEventListener('click', () => {
-      if (sendState.pending) return;
       const text = textarea.value.trim();
       if (!text) {
-        setStatus('error', '❌ Пожалуйста, введите текст обращения');
+        setStatus('error', 'Введите текст обращения');
         return;
       }
       if (text.length < 10) {
-        setStatus('error', '❌ Текст слишком короткий. Опишите подробнее (минимум 10 символов)');
+        setStatus('error', 'Текст должен быть не короче 10 символов');
         return;
       }
-      
-      sendState.pending = true;
+
       sendBtn.disabled = true;
-      sendBtn.textContent = '⏳ Отправка...';
-      setStatus('info', '📤 Отправляем обращение...');
-      
-      const data = {
-        action: 'submit_feedback',
+      sendBtn.textContent = 'Подготовка...';
+      setStatus('info', 'Готовим безопасную отправку...');
+
+      const payload = {
+        action: "submit_feedback",
         anonymous_id: anonymousId,
         type: category,
         text: text,
         timestamp: new Date().toISOString()
       };
-      
-      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-      const fallbackMessage = `WEBAPP_DATA:${encoded}`;
-      
-      let sendSuccess = false;
-      try {
-        tg.sendData(JSON.stringify(data));
-        console.log('Данные отправлены через sendData');
-        sendSuccess = true;
-      } catch (e) {
-        console.error('Ошибка sendData:', e);
-        setStatus('error', '⚠️ Не удалось отправить автоматически.');
-      }
-      
-      if (sendSuccess) {
-        // Если sendData прошел без ошибки, считаем успех и ждем немного перед закрытием
-        sendState.autoSuccessTimeout = setTimeout(() => {
-          if (sendState.pending) {
-            handleSendSuccess();
-          }
-        }, 1500);  // Задержка для имитации отправки
-      } else {
-        // Показываем fallback только при ошибке sendData
-        const chatButton = document.createElement('button');
-        chatButton.className = 'send-btn fallback-button';
-        chatButton.textContent = '📤 Отправить через чат';
-        chatButton.style.marginTop = '10px';
-        chatButton.style.background = 'linear-gradient(135deg, #2196F3, #1976D2)';
-        chatButton.onclick = () => {
-          tg.openTelegramLink(`https://t.me/new_otziv_Bot?text=${encodeURIComponent(fallbackMessage)}`);
-          handleSendSuccess('✅ Данные подготовлены! Откройте чат и отправьте сообщение.');
-        };
-        statusDiv.appendChild(chatButton);
-        
-        // Таймаут на ошибку, если не нажмут
-        sendState.failTimeout = setTimeout(() => {
-          if (sendState.pending) {
-            sendState.pending = false;
-            setStatus('error', '⚠️ Не удалось отправить. Закройте мини-приложение и отправьте сообщение вручную в чате с ботом.');
-            resetSendButton();
-          }
-        }, 30000);  // Дольше таймаут на ошибку
-      }
+
+      // Надёжное кодирование (поддерживает кириллицу и любые символы)
+      const jsonStr = JSON.stringify(payload);
+      const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+      const message = "WEBAPP_DATA:" + base64;
+
+      // ВАЖНО: замени new_otziv_Bot на имя своего бота!
+      const botUsername = "new_otziv_Bot";
+
+      const url = `https://t.me/${botUsername}?text=${encodeURIComponent(message)}`;
+
+      setStatus('success', 'Готово! Открывается чат — просто нажмите «Отправить»');
+      sendBtn.textContent = 'Открываем чат...';
+
+      setTimeout(() => {
+        tg.openTelegramLink(url);
+        setTimeout(() => tg.close(), 1200); // закрываем WebApp, пользователь уже в чате
+      }, 1000);
     });
-    
-    textarea.addEventListener('input', function() {
-      if (this.value.trim().length > 0 && !sendState.pending) {
-        setStatus(null, '');
-        resetSendButton();
-      }
-    });
-    
-    tg.onEvent('viewportChanged', () => {
-      tg.expand();
-    });
-    
+
+    // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
       initAnonymousId();
       textarea.focus();
     });
-    
-    textarea.addEventListener('keydown', function(e) {
+
+    // Ctrl+Enter
+    textarea.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         sendBtn.click();
       }
