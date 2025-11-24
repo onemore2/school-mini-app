@@ -5,12 +5,12 @@
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* стили остались как у вас */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #fff;
@@ -18,29 +18,10 @@
       min-height: 100vh;
       padding: 20px;
     }
-    
-    .container {
-      max-width: 100%;
-      margin: 0 auto;
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px 0;
-    }
-    
-    .header h1 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .header p {
-      opacity: 0.9;
-      font-size: 14px;
-    }
-    
+    .container { max-width: 100%; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 30px; padding: 20px 0; }
+    .header h1 { font-size: 24px; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .header p { opacity: 0.9; font-size: 14px; }
     .card {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
@@ -49,13 +30,11 @@
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    
     .category-buttons {
       display: grid;
       gap: 12px;
       margin-bottom: 25px;
     }
-    
     .category-btn {
       background: rgba(255, 255, 255, 0.15);
       border: 2px solid transparent;
@@ -69,23 +48,17 @@
       text-align: left;
       backdrop-filter: blur(10px);
     }
-    
     .category-btn:hover {
       background: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
     }
-    
     .category-btn.active {
       background: rgba(255, 255, 255, 0.3);
       border-color: rgba(255, 255, 255, 0.5);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
-    
-    .textarea-container {
-      margin: 25px 0;
-    }
-    
+    .textarea-container { margin: 25px 0; }
     textarea {
       width: 100%;
       background: rgba(255, 255, 255, 0.1);
@@ -99,18 +72,15 @@
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
-    
     textarea::placeholder {
       color: rgba(255, 255, 255, 0.7);
     }
-    
     textarea:focus {
       outline: none;
       border-color: rgba(255, 255, 255, 0.5);
       background: rgba(255, 255, 255, 0.15);
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
-    
     .send-btn {
       width: 100%;
       background: linear-gradient(135deg, #4CAF50, #45a049);
@@ -125,23 +95,19 @@
       margin-top: 10px;
       box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
     }
-    
     .send-btn:hover:not(:disabled) {
       transform: translateY(-3px);
       box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
     }
-    
     .send-btn:active {
       transform: translateY(-1px);
     }
-    
     .send-btn:disabled {
       background: rgba(255, 255, 255, 0.2);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
-    
     .status {
       text-align: center;
       padding: 15px;
@@ -150,22 +116,18 @@
       font-weight: 500;
       transition: all 0.3s ease;
     }
-    
     .status.success {
       background: rgba(76, 175, 80, 0.3);
       border: 1px solid rgba(76, 175, 80, 0.5);
     }
-    
     .status.error {
       background: rgba(244, 67, 54, 0.3);
       border: 1px solid rgba(244, 67, 54, 0.5);
     }
-    
     .status.info {
       background: rgba(33, 150, 243, 0.3);
       border: 1px solid rgba(33, 150, 243, 0.5);
     }
-    
     .anonymous-id {
       background: rgba(255, 255, 255, 0.1);
       padding: 15px;
@@ -176,42 +138,22 @@
       font-size: 14px;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    
     .instructions {
       font-size: 14px;
       opacity: 0.8;
       line-height: 1.5;
       margin-top: 15px;
     }
-    
     .category-icon {
       margin-right: 10px;
       font-size: 18px;
     }
-    
     @media (max-width: 480px) {
-      body {
-        padding: 15px;
-      }
-      
-      .card {
-        padding: 20px;
-      }
-      
-      .category-btn {
-        padding: 15px;
-        font-size: 14px;
-      }
-      
-      textarea {
-        padding: 15px;
-        font-size: 14px;
-      }
-      
-      .send-btn {
-        padding: 18px;
-        font-size: 16px;
-      }
+      body { padding: 15px; }
+      .card { padding: 20px; }
+      .category-btn { padding: 15px; font-size: 14px; }
+      textarea { padding: 15px; font-size: 14px; }
+      .send-btn { padding: 18px; font-size: 16px; }
     }
   </style>
 </head>
@@ -261,7 +203,6 @@
   </div>
 
   <script>
-    // Инициализация Telegram WebApp
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
@@ -269,12 +210,10 @@
     tg.setHeaderColor('#667eea');
     tg.setBackgroundColor('#667eea');
     
-    // Общие элементы
     const textarea = document.getElementById('text');
     const statusDiv = document.getElementById('status');
     const sendBtn = document.getElementById('send');
     
-    // Переменные приложения
     let category = 'idea';
     let anonymousId = '';
     const sendState = {
@@ -283,7 +222,6 @@
       confirmTimeout: null,
       failTimeout: null,
       autoSuccessTimeout: null,
-      fallbackTimeout: null
     };
     
     function setStatus(type, message) {
@@ -301,32 +239,15 @@
     
     function handleSendSuccess(message) {
       if (!sendState.pending) return;
-      
       sendState.pending = false;
       sendState.confirmed = false;
-      if (sendState.confirmTimeout) clearTimeout(sendState.confirmTimeout);
-      if (sendState.failTimeout) clearTimeout(sendState.failTimeout);
-      if (sendState.autoSuccessTimeout) clearTimeout(sendState.autoSuccessTimeout);
-      sendState.confirmTimeout = null;
-      sendState.failTimeout = null;
-      sendState.autoSuccessTimeout = null;
-      
-      // Скрываем fallback кнопку, если она была показана
-      const fallbackButton = statusDiv.querySelector('.fallback-button');
-      if (fallbackButton) {
-        fallbackButton.remove();
-      }
-      
+      clearTimeout(sendState.confirmTimeout);
+      clearTimeout(sendState.failTimeout);
+      clearTimeout(sendState.autoSuccessTimeout);
+      setStatus('success', message || '✅ Обращение отправлено! Можете закрыть мини-приложение.');
       sendBtn.disabled = true;
       sendBtn.textContent = '✅ Отправлено';
-      setStatus('success', message || '✅ Обращение отправлено! Можете закрыть мини-приложение.');
-      
-      if (tg.HapticFeedback) {
-        try {
-          tg.HapticFeedback.notificationOccurred('success');
-        } catch (e) {}
-      }
-      
+      try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
       try {
         tg.showPopup({
           title: 'Отправлено',
@@ -334,47 +255,34 @@
           buttons: [{type: 'ok'}]
         });
       } catch (e) {}
-      
       setTimeout(() => tg.close(), 1800);
     }
     
-    // Генерация анонимного ID (похожего на серверный формат)
     function generateAnonymousId() {
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const numbers = '0123456789';
-      
       let letterPart = '';
       for (let i = 0; i < 4; i++) {
         letterPart += letters.charAt(Math.floor(Math.random() * letters.length));
       }
-      
+      const numbers = '0123456789';
       let numberPart = '';
       for (let i = 0; i < 2; i++) {
         numberPart += numbers.charAt(Math.floor(Math.random() * numbers.length));
       }
-      
       return `STU-${letterPart}${numberPart}`;
     }
     
-    // Инициализация анонимного ID
     function initAnonymousId() {
       anonymousId = generateAnonymousId();
       document.getElementById('anonymousId').textContent = anonymousId;
     }
     
-    // Обработчики категорий
+    // Категории
     document.querySelectorAll('.category-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        // Убираем активный класс у всех кнопок
-        document.querySelectorAll('.category-btn').forEach((b) => {
-          b.classList.remove('active');
-        });
-        
-        // Добавляем активный класс к нажатой кнопке
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         category = btn.getAttribute('data-category');
-        
-        // Обновляем placeholder в зависимости от категории
         const placeholders = {
           'idea': 'Опишите вашу идею по улучшению школы...',
           'question': 'Задайте ваш вопрос подробно...',
@@ -384,32 +292,23 @@
       });
     });
     
-    // Отправка данных
     sendBtn.addEventListener('click', () => {
       if (sendState.pending) return;
-      
       const text = textarea.value.trim();
-      
-      // Валидация
       if (!text) {
         setStatus('error', '❌ Пожалуйста, введите текст обращения');
         return;
       }
-      
       if (text.length < 10) {
         setStatus('error', '❌ Текст слишком короткий. Опишите подробнее (минимум 10 символов)');
         return;
       }
       
-      // Блокируем кнопку на время отправки
       sendState.pending = true;
       sendBtn.disabled = true;
       sendBtn.textContent = '⏳ Отправка...';
-      
-      // Показываем статус отправки
       setStatus('info', '📤 Отправляем обращение...');
       
-      // Подготавливаем данные для отправки
       const data = {
         action: 'submit_feedback',
         anonymous_id: anonymousId,
@@ -417,15 +316,12 @@
         text: text,
         timestamp: new Date().toISOString()
       };
-      
-      // Сбрасываем флаг подтверждения
       sendState.confirmed = false;
       
-      // Подготавливаем fallback сообщение сразу
       const encoded = btoa(JSON.stringify(data));
       const fallbackMessage = `WEBAPP_DATA:${encoded}`;
       
-      // Пробуем через web_app_data (может не работать на мобильных)
+      // Попытка отправки данных через sendData
       try {
         tg.sendData(JSON.stringify(data));
         console.log('Данные отправлены через sendData');
@@ -433,8 +329,7 @@
         console.error('Ошибка sendData:', e);
       }
       
-      // Показываем fallback кнопку СРАЗУ (на случай, если web_app_data не работает)
-      // Удаляем старую кнопку, если есть
+      // Добавляем fallback кнопку
       const oldButton = statusDiv.querySelector('.fallback-button');
       if (oldButton) {
         oldButton.remove();
@@ -446,24 +341,16 @@
       chatButton.style.marginTop = '10px';
       chatButton.style.background = 'linear-gradient(135deg, #2196F3, #1976D2)';
       chatButton.onclick = () => {
-        // Открываем чат с предзаполненным сообщением
         tg.openTelegramLink(`https://t.me/new_otziv_Bot?text=${encodeURIComponent(fallbackMessage)}`);
         handleSendSuccess('✅ Данные подготовлены! Откройте чат и отправьте сообщение.');
       };
       
-      // Показываем кнопку через 1 секунду (даём время web_app_data сработать)
       setTimeout(() => {
         if (sendState.pending && !sendState.confirmed) {
           setStatus('info', '📤 Если сообщение не отправилось автоматически, нажмите кнопку ниже:');
           statusDiv.appendChild(chatButton);
         }
       }, 1000);
-      
-      if (tg.HapticFeedback) {
-        try {
-          tg.HapticFeedback.impactOccurred('light');
-        } catch (e) {}
-      }
       
       sendState.confirmTimeout = setTimeout(() => {
         if (sendState.pending) {
@@ -475,17 +362,13 @@
         if (sendState.pending && sendState.confirmed) {
           handleSendSuccess();
         }
-      }, 2500);
+      }, 3500);
       
       sendState.failTimeout = setTimeout(() => {
         if (sendState.pending && !sendState.confirmed) {
-          // Если fallback кнопка уже показана, не показываем ошибку
           const fallbackButton = statusDiv.querySelector('.fallback-button');
           if (!fallbackButton) {
-            // Fallback кнопка не появилась, показываем ошибку
             sendState.pending = false;
-            if (sendState.confirmTimeout) clearTimeout(sendState.confirmTimeout);
-            if (sendState.autoSuccessTimeout) clearTimeout(sendState.autoSuccessTimeout);
             setStatus('error', '⚠️ Не удалось отправить. Закройте мини-приложение и отправьте сообщение вручную в чате с ботом.');
             resetSendButton();
           }
@@ -493,7 +376,6 @@
       }, 10000);
     });
     
-    // Обработка изменения текста
     textarea.addEventListener('input', function() {
       if (this.value.trim().length > 0 && !sendState.pending) {
         setStatus(null, '');
@@ -501,7 +383,6 @@
       }
     });
     
-    // Обработка ошибок Telegram WebApp
     tg.onEvent('viewportChanged', () => {
       tg.expand();
     });
@@ -509,27 +390,20 @@
     tg.onEvent('web_app_data_send', () => {
       sendState.confirmed = true;
       console.log('web_app_data_send подтвержден');
-      
-      // Скрываем fallback кнопку, если она была показана
       const fallbackButton = statusDiv.querySelector('.fallback-button');
       if (fallbackButton) {
         fallbackButton.remove();
       }
-      
       if (sendState.pending) {
         handleSendSuccess();
       }
     });
     
-    // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', () => {
       initAnonymousId();
-      
-      // Фокус на текстовое поле
       textarea.focus();
     });
     
-    // Обработка нажатия Enter для отправки (Ctrl+Enter или Cmd+Enter)
     textarea.addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         sendBtn.click();
