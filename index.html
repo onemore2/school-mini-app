@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -48,7 +48,7 @@
       };
 
       Telegram.WebApp.sendData(JSON.stringify(data));
-      // Не вызываем close() — Telegram закроет автоматически
+      Telegram.WebApp.close();
     };
   </script>
 </body>
