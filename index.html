@@ -1,187 +1,44 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Школьный Чат</title>
-  <!-- ВАЖНО: без пробелов в конце URL -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      background: #000;
-      color: #fff;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      overflow-x: hidden;
-      padding-top: 24px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 28px;
-      padding: 0 16px;
-    }
-
-    .header h1 {
-      font-size: 26px;
-      margin-bottom: 6px;
-      background: linear-gradient(90deg, #ff0000, #fffb00, #00ffd5, #002bff, #ff00c8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .card {
-      background: #111;
-      border-radius: 16px;
-      padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      margin-bottom: 24px;
-      border: 1px solid #333;
-    }
-
-    .section-title {
-      font-size: 16px;
-      margin-bottom: 14px;
-      opacity: 0.9;
-    }
-
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .category-btn {
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 12px;
-      padding: 14px 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #ccc;
-    }
-
-    .category-btn.active {
-      background: #333;
-      color: white;
-      border-color: #ff00c8;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 110px;
-      padding: 14px;
-      border: 1px solid #444;
-      border-radius: 12px;
-      font-size: 16px;
-      background: #222;
-      color: white;
-      resize: vertical;
-      margin-bottom: 20px;
-    }
-
-    textarea::placeholder {
-      color: #666;
-    }
-
-    /* --- Неоновая кнопка --- */
-    .glow-on-hover {
-      width: 90%;
-      max-width: 500px;
-      height: 56px;
-      border: none;
-      outline: none;
-      color: #fff;
-      background: #111;
-      cursor: pointer;
-      position: relative;
-      z-index: 0;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .glow-on-hover:before {
-      content: '';
-      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      background-size: 400%;
-      z-index: -1;
-      filter: blur(5px);
-      width: calc(100% + 4px);
-      height: calc(100% + 4px);
-      animation: glowing 20s linear infinite;
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      border-radius: 12px;
-    }
-
-    .glow-on-hover:hover:before {
-      opacity: 1;
-    }
-
-    .glow-on-hover:after {
-      z-index: -1;
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: #111;
-      left: 0;
-      top: 0;
-      border-radius: 12px;
-    }
-
-    @keyframes glowing {
-      0% { background-position: 0 0; }
-      50% { background-position: 400% 0; }
-      100% { background-position: 0 0; }
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9fafb; }
+    .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    h2 { text-align: center; margin-bottom: 20px; color: #1e40af; }
+    button { padding: 10px 16px; margin: 5px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; }
+    textarea { width: 100%; height: 100px; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+    #send { background: #16a34a; color: white; width: 100%; margin-top: 15px; }
+    .category-btn { background: #e5e7eb; }
+    .category-btn.active { background: #3b82f6; color: white; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>📨 Школьный Чат</h1>
-  </div>
+  <div class="container">
+    <h2>📨 Новое обращение</h2>
 
-  <div class="card">
-    <div class="section-title">1. Категория</div>
-    <div class="categories">
+    <div>
+      <strong>Категория:</strong><br>
       <button class="category-btn active" data-type="idea">💡 Идея</button>
       <button class="category-btn" data-type="question">❓ Вопрос</button>
       <button class="category-btn" data-type="complaint">⚠️ Проблема</button>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="section-title">2. Текст обращения</div>
-    <textarea id="text" placeholder="Опишите подробно..."></textarea>
-  </div>
+    <div>
+      <strong>Текст:</strong><br>
+      <textarea id="text" placeholder="Опишите подробно..."></textarea>
+    </div>
 
-  <button id="send" class="glow-on-hover">✅ Отправить</button>
+    <button id="send">✅ Отправить</button>
+  </div>
 
   <script>
-    // Инициализация Telegram
-    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
-    }
-
-    // Выбор категории
     let category = 'idea';
+
+    // Обработка выбора категории
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -191,20 +48,18 @@
     });
 
     // Генерация анонимного ID
-    let anonId = localStorage.getItem('anonId');
-    if (!anonId) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ012345';
-      anonId = 'STU-' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-      localStorage.setItem('anonId', anonId);
-    }
+    const anonId = 'STU-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    // Отправка
+    // Обработка отправки
     document.getElementById('send').addEventListener('click', () => {
       const text = document.getElementById('text').value.trim();
       if (!text) {
-        if (Telegram?.WebApp) {
-          Telegram.WebApp.showAlert('Введите текст!');
-        }
+        alert('Введите текст обращения!');
+        return;
+      }
+
+      if (typeof Telegram === 'undefined' || !Telegram.WebApp) {
+        alert('Ошибка: Mini App не загружен. Перезапустите бота.');
         return;
       }
 
@@ -215,9 +70,8 @@
         text: text
       };
 
-      if (Telegram?.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify(data));
-      }
+      Telegram.WebApp.sendData(JSON.stringify(data));
+      Telegram.WebApp.close();
     });
   </script>
 </body>
