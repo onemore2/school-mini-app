@@ -1,83 +1,297 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Школьный Чат</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {margin:0;background:#667eea;font-family:sans-serif;color:#fff;padding:20px;min-height:100vh}
-    .c{background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border-radius:20px;padding:25px;margin-bottom:20px}
-    h1{font-size:24px;text-align:center;margin-bottom:10px}
-    p{text-align:center;opacity:0.9;font-size:14px}
-    .btn{display:grid;gap:10px;margin:20px 0}
-    button{background:rgba(255,255,255,0.2);border:none;border-radius:15px;padding:18px;color:#fff;font-size:16px;cursor:pointer}
-    button.active{background:rgba(255,255,255,0.4);border:2px solid #fff}
-    textarea{width:100%;height:150px;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.3);border-radius:15px;padding:15px;color:#fff;font-size:16px;resize:none}
-    textarea:focus{outline:none;border-color:#fff;background:rgba(255,255,255,0.2)}
-    .send{width:100%;background:#4CAF50;padding:20px;font-size:18px;border-radius:15px;border:none;color:#fff;margin-top:15px;cursor:pointer}
-    .send:disabled{background:#666;cursor:not-allowed}
-    .id{background:rgba(255,255,255,0.1);padding:12px;border-radius:12px;text-align:center;margin:20px 0;font-family:monospace;font-size:15px}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 100%; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 30px; padding: 20px 0; }
+    .header h1 { font-size: 24px; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .header p { opacity: 0.9; font-size: 14px; }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .category-buttons { display: grid; gap: 12px; margin-bottom: 25px; }
+    .category-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid transparent;
+      border-radius: 15px;
+      padding: 18px;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+      backdrop-filter: blur(10px);
+    }
+    .category-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+    .category-btn.active {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    .textarea-container { margin: 25px 0; }
+    textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 18px;
+      color: white;
+      font-size: 16px;
+      resize: vertical;
+      min-height: 140px;
+      backdrop-filter: blur(10px);
+    }
+    textarea::placeholder { color: rgba(255,255,255,0.7); }
+    textarea:focus {
+      outline: none;
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    .send-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      border: none;
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 8px 25px rgba(76,175,80,0.3);
+      transition: all 0.3s ease;
+    }
+    .send-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(76,175,80,0.4); }
+    .send-btn:disabled {
+      background: rgba(255,255,255,0.2);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .status {
+      text-align: center;
+      padding: 15px;
+      border-radius: 15px;
+      margin: 20px 0;
+      font-weight: 500;
+    }
+    .status.success { background: rgba(76,175,80,0.3); border: 1px solid rgba(76,175,80,0.5); }
+    .status.error { background: rgba(244,67,54,0.3); border: 1px solid rgba(244,67,54,0.5); }
+    .status.info { background: rgba(33,150,243,0.3); border: 1px solid rgba(33,150,243,0.5); }
+    .anonymous-id {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .instructions {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.5;
+      margin-top: 15px;
+    }
+    .category-icon { margin-right: 10px; font-size: 18px; }
+    @media (max-width: 480px) {
+      body { padding: 15px; }
+      .card { padding: 20px; }
+    }
   </style>
 </head>
 <body>
-<div class="c">
-  <h1>Школьный Чат</h1>
-  <p>Анонимные обращения</p>
-  
-  <div class="btn">
-    <button class="active" data-t="idea">Идея</button>
-    <button data-t="question">Вопрос</button>
-    <button data-t="complaint">Проблема</button>
+  <div class="container">
+    <div class="header">
+      <h1>📨 Школьный Чат</h1>
+      <p>Анонимные обращения и предложения</p>
+    </div>
+
+    <div class="card">
+      <div class="category-buttons">
+        <button class="category-btn active" data-category="idea">
+          <span class="category-icon">💡</span>Идея
+        </button>
+        <button class="category-btn" data-category="question">
+          <span class="category-icon">❓</span>Вопрос
+        </button>
+        <button class="category-btn" data-category="complaint">
+          <span class="category-icon">⚠️</span>Проблема
+        </button>
+      </div>
+
+      <div class="textarea-container">
+        <textarea id="text" placeholder="Опишите вашу идею, вопрос или проблему подробно..." rows="6"></textarea>
+      </div>
+
+      <div id="status"></div>
+
+      <div class="anonymous-id">
+        Ваш анонимный номер: <span id="anonymousId">...</span>
+      </div>
+
+      <button id="send" class="send-btn">✅ Отправить обращение</button>
+
+      <div class="instructions">
+        💡 <strong>Совет:</strong> Опишите ситуацию максимально подробно. Это поможет быстрее решить ваш вопрос!
+      </div>
+    </div>
   </div>
-  
-  <textarea id="msg" placeholder="Опишите подробно (минимум 10 символов)..."></textarea>
-  
-  <div class="id">Ваш номер: <b id="id">STU-XXXXXX</b></div>
-  
-  <button id="send" class="send">Отправить</button>
-</div>
 
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.ready(); tg.expand();
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tg.enableClosingConfirmation();
+    tg.setHeaderColor('#667eea');
+    tg.setBackgroundColor('#667eea');
 
-  const btns = document.querySelectorAll('[data-t]');
-  const msg = document.getElementById('msg');
-  const send = document.getElementById('send');
-  let type = 'idea';
-  const id = 'STU-' + Math.random().toString(36).substr(2,4).toUpperCase() + Math.random().toString(10).substr(2,2);
-  document.getElementById('id').textContent = id;
+    const textarea = document.getElementById('text');
+    const statusDiv = document.getElementById('status');
+    const sendBtn = document.getElementById('send');
 
-  btns.forEach(b => b.onclick = () => {
-    btns.forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    type = b.dataset.t;
-  });
+    let category = 'idea';
+    let anonymousId = '';
 
-  send.onclick = () => {
-    const text = msg.value.trim();
-    if (text.length < 10) return alert('Минимум 10 символов!');
+    function setStatus(type, message) {
+      if (!message) {
+        statusDiv.innerHTML = '';
+        return;
+      }
+      statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+    }
 
-    send.disabled = true;
-    send.textContent = 'Готовим...';
+    function resetSendButton() {
+      sendBtn.disabled = false;
+      sendBtn.textContent = '✅ Отправить обращение';
+    }
 
-    const data = {action:"submit_feedback", anonymous_id:id, type, text, timestamp:new Date().toISOString()};
-    const json = JSON.stringify(data);
-    const base64 = btoa(unescape(encodeURIComponent(json)));
-    const magic = "WEBAPP_DATA:" + base64;
+    function generateAnonymousId() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let letterPart = '';
+      for (let i = 0; i < 4; i++) {
+        letterPart += letters.charAt(Math.floor(Math.random() * letters.length));
+      }
+      const numbers = '0123456789';
+      let numberPart = '';
+      for (let i = 0; i < 2; i++) {
+        numberPart += numbers.charAt(Math.floor(Math.random() * numbers.length));
+      }
+      return `STU-${letterPart}${numberPart}`;
+    }
 
-    // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-    // ЗАМЕНИ НА СВОЙ БОТ ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    const BOT = "new_otziv_Bot";
-    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    function initAnonymousId() {
+      anonymousId = generateAnonymousId();
+      document.getElementById('anonymousId').textContent = anonymousId;
+    }
 
-    const url = `https://t.me/${BOT}?text=${encodeURIComponent(magic)}`;
+    // Категории
+    document.querySelectorAll('.category-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        category = btn.getAttribute('data-category');
+        const placeholders = {
+          'idea': 'Опишите вашу идею по улучшению школы...',
+          'question': 'Задайте ваш вопрос подробно...',
+          'complaint': 'Опишите проблему, с которой столкнулись...'
+        };
+        textarea.placeholder = placeholders[category] || 'Опишите подробно...';
+      });
+    });
 
-    setTimeout(() => {
-      tg.openTelegramLink(url);
-      setTimeout(() => tg.close(), 1000);
-    }, 800);
-  };
-</script>
+    // Отправка — 100% fallback без sendData
+    sendBtn.addEventListener('click', () => {
+      const text = textarea.value.trim();
+      if (!text) {
+        setStatus('error', '❌ Пожалуйста, введите текст обращения');
+        return;
+      }
+      if (text.length < 10) {
+        setStatus('error', '❌ Текст слишком короткий. Опишите подробнее (минимум 10 символов)');
+        return;
+      }
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = '⏳ Подготовка...';
+      setStatus('info', '📤 Готовим надёжную отправку...');
+
+      const payload = {
+        action: 'submit_feedback',
+        anonymous_id: anonymousId,
+        type: category,
+        text: text,
+        timestamp: new Date().toISOString()
+      };
+
+      // Надёжное кодирование для кириллицы и спецсимволов
+      const jsonString = JSON.stringify(payload);
+      const base64 = btoa(unescape(encodeURIComponent(jsonString)));
+      const fallbackMessage = `WEBAPP_DATA:${base64}`;
+
+      // ←←← ЗАМЕНИ "new_otziv_Bot" НА ТОЧНОЕ ИМЯ ТВОЕГО БОТА (без @) ↓↓↓
+      const botUsername = 'new_otziv_Bot';
+      // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+      const url = `https://t.me/${botUsername}?text=${encodeURIComponent(fallbackMessage)}`;
+
+      // Показываем успех и открываем чат
+      setTimeout(() => {
+        setStatus('success', '✅ Готово! Открывается чат — просто нажмите «Отправить» в поле ввода.');
+        sendBtn.textContent = '📱 Открываем чат...';
+        try {
+          tg.HapticFeedback.notificationOccurred('success');
+          tg.showPopup({
+            title: 'Отправка готова!',
+            message: 'Ваше сообщение уже в чате. Нажмите «Отправить» и всё!',
+            buttons: [{type: 'ok'}]
+          });
+        } catch (e) {}
+        tg.openTelegramLink(url);
+        // Закрываем WebApp через 2 сек — пользователь уже в чате
+        setTimeout(() => tg.close(), 2000);
+      }, 800);
+    });
+
+    textarea.addEventListener('input', function() {
+      if (this.value.trim().length > 0) {
+        setStatus(null, '');
+        resetSendButton();
+      }
+    });
+
+    tg.onEvent('viewportChanged', () => tg.expand());
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initAnonymousId();
+      textarea.focus();
+    });
+
+    textarea.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        sendBtn.click();
+      }
+    });
+  </script>
 </body>
 </html>
